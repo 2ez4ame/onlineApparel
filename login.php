@@ -5,32 +5,48 @@ include('databaseconnection.php');
 $error_message = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get form data
+   
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Validate input
+   
     if (empty($email) || empty($password)) {
         $error_message = "Both email and password fields are required.";
     } else {
-        // Prepare the statement to fetch the user
+        
         $stmt = $conn->prepare("SELECT password FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
 
-        // Check if the email exists in the database
+       
         if ($stmt->num_rows > 0) {
             $stmt->bind_result($hashed_password);
             $stmt->fetch();
 
-            // Verify the password
+           
             if (password_verify($password, $hashed_password)) {
-                // Start session and store user information
+                
                 session_start();
-                $_SESSION['email'] = $email; // Store user email in session
+                $_SESSION['email'] = $email;
 
-                // Redirect to user home page
+                
+                $user_id = $_POST['user_id']; 
+
+                
+                $sql = "SELECT firstname FROM users WHERE id = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $user_id);
+                $stmt->execute();
+                $stmt->bind_result($firstname);
+                $stmt->fetch();
+                $stmt->close();
+
+              
+                $_SESSION['firstname'] = $firstname;
+                
+
+               
                 header("Location: userhome.php");
                 exit();
             } else {
@@ -40,16 +56,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error_message = "No user found with that email address.";
         }
 
-        // Close the statement
+        
         $stmt->close();
     }
 }
 
-// Close the database connection
+
 $conn->close();
 ?>
 
-<!-- Modal Structure -->
+
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -58,7 +74,7 @@ $conn->close();
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="errorModalBody">
-        <!-- Error message will be injected here -->
+        
       </div>
      
     </div>
