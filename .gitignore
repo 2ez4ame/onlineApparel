@@ -1,2 +1,2 @@
-.cache/
-.parcel-cache/
+/.cache
+/.parcel-cache

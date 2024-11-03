@@ -141,6 +141,15 @@
     .place-order a:hover{
         color:green;
     }
+    #modelContainer {
+      width: calc(100% - 250px); /* Adjust width to account for sidebar */
+      height: calc(100vh - 70px); /* Adjust height to account for header */
+      margin: 70px 0 0 250px; /* Adjust margins to avoid overlapping with header and sidebar */
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
   </style>
   <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 </head>
@@ -177,6 +186,10 @@
     <div class="shareBtn">
       <button>Share</button>
     </div>
+  </div>
+  
+  <div id="modelContainer">
+    <div id="container3D" style="width: 100%; height: 100%;"></div> <!-- Adjust the container3D to fit within the modelContainer -->
   </div>
 
   <div class="modal-overlay" id="menuModal">
