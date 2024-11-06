@@ -4,17 +4,19 @@ import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/js
 import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
 
 const scene = new THREE.Scene();
-let objToRender = 'tshirt'; // Ensure this is defined before use
+let objToRender = 'tshirt';
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const headerHeight = 70; // Height of the fixed header
-camera.position.z = 50; // Adjust camera position to make the model smaller and centered
-camera.position.y = 0; // Center the camera vertically
+const headerHeight = 70;
+camera.position.z = 50;
+camera.position.y = 0;
 
 const renderer = new THREE.WebGLRenderer({ alpha: true });
+renderer.setClearColor(0x000000, 0); // Set background color to transparent
 const container = document.getElementById("container3D");
 if (container) {
   container.appendChild(renderer.domElement);
-  renderer.setSize(container.clientWidth, container.clientHeight); // Adjust renderer size to fit the container
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  console.log("Renderer appended to container");
 } else {
   console.error("Container element not found");
 }
@@ -22,7 +24,6 @@ if (container) {
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
 let object;
-let controls;
 const loader = new GLTFLoader();
 
 // Function to set the size of the T-shirt model
@@ -34,24 +35,19 @@ function setSize(object, size) {
 loader.load(
   `models/${objToRender}/scene.gltf`,
   function (gltf) {
+    console.log("Model loaded:", gltf);
     object = gltf.scene;
-    object.position.set(0, -5, 0); // Adjust position to center the model and avoid overlapping with the header
-    
-    // Set initial size for the T-shirt model
-    const initialSize = 1.0; // Adjust this value to make the model larger
-    setSize(object, initialSize);
-    
-    // Set initial color for the T-shirt material
+    object.position.set(0, -5, 0);
+    setSize(object, 1.0);
+
     object.traverse((node) => {
       if (node.isMesh) {
         node.material = new THREE.MeshStandardMaterial({
-          color: "#ffffff", // Set initial color
-          side: THREE.DoubleSide // Render both sides
+          color: "#ffffff",
+          side: THREE.DoubleSide
         });
-        
-        // Adjust shoulder size to be equal
         if (node.name.includes("Shoulder")) {
-          node.scale.x = 1; // Ensure equal scaling on x-axis
+          node.scale.x = 1;
         }
       }
     });
@@ -91,83 +87,13 @@ topLight.shadow.mapSize.height = 1024;
 topLight.shadow.camera.near = 0.5;
 topLight.shadow.camera.far = 500;
 
-controls = new OrbitControls(camera, renderer.domElement);
+// Initialize OrbitControls
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enablePan = false; // Disable panning
+controls.minPolarAngle = Math.PI / 2; // Lock vertical rotation at the horizontal level
+controls.maxPolarAngle = Math.PI / 2; // Lock vertical rotation at the horizontal level
 
-let chestImage, backImage;
-
-document.getElementById("chestImageUpload").addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      const texture = new THREE.TextureLoader().load(event.target.result);
-      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-      texture.repeat.set(1, 1);
-
-      if (chestImage) {
-        chestImage.material.map = texture;
-        chestImage.material.needsUpdate = true;
-      } else {
-        chestImage = new THREE.Mesh(
-          new THREE.PlaneGeometry(10, 10), // Adjusted size to fit within square lines
-          new THREE.MeshBasicMaterial({ map: texture, transparent: true })
-        );
-        chestImage.position.set(0, 0, 0.1); // Adjust position as needed
-        object.add(chestImage);
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-});
-
-document.getElementById("backImageUpload").addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      const texture = new THREE.TextureLoader().load(event.target.result);
-      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-      texture.repeat.set(1, 1);
-
-      if (backImage) {
-        backImage.material.map = texture;
-        backImage.material.needsUpdate = true;
-      } else {
-        backImage = new THREE.Mesh(
-          new THREE.PlaneGeometry(10, 10), // Adjusted size to fit within square lines
-          new THREE.MeshBasicMaterial({ map: texture, transparent: true })
-        );
-        backImage.position.set(0, 0, -0.1); // Adjust position as needed
-        object.add(backImage);
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-});
-
-let selectedTextMesh = null;
-
-// Function to make text mesh editable
-function makeTextMeshEditable(mesh) {
-  selectedTextMesh = mesh;
-  const text = prompt("Edit text:", mesh.geometry.parameters.text);
-  if (text !== null) {
-    const font = document.getElementById("fontSelect").value;
-    const size = parseFloat(document.getElementById("textSize").value);
-    updateTextMesh(text, font, size);
-  }
-}
-
-// Event listener for making text mesh editable
-document.addEventListener("dblclick", function (event) {
-  if (selectedTextMesh) {
-    makeTextMeshEditable(selectedTextMesh);
-  }
-});
-
-let textSprite;
-
-// Function to create text sprite
+// Function to create and position text sprite
 function createTextSprite(text, font, size, color) {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
@@ -178,16 +104,26 @@ function createTextSprite(text, font, size, color) {
   const texture = new THREE.CanvasTexture(canvas);
   const material = new THREE.SpriteMaterial({ map: texture });
   textSprite = new THREE.Sprite(material);
-  textSprite.scale.set(canvas.width / 10, canvas.height / 10, 1); // Adjust scale as needed
+  textSprite.scale.set(canvas.width / 10, canvas.height / 10, 1);
 
-  // Allow user to position the text on the 3D model
-  textSprite.position.set(0, 0, 0.2); // Initial position
-  textSprite.userData.draggable = true; // Mark as draggable
+  textSprite.position.set(0, 0, 5); // Position it outside the model initially
+  textSprite.userData.draggable = true;
 
   object.add(textSprite);
+  addDragControls(textSprite);
+}
 
-  // Add drag functionality
-  textSprite.on('mousedown', function (event) {
+// Function to update the text sprite's properties
+function updateTextSprite(text, font, size, color) {
+  if (textSprite) {
+    object.remove(textSprite);
+  }
+  createTextSprite(text, font, size, color);
+}
+
+// Adding event listener for dragging text sprite
+function addDragControls(sprite) {
+  sprite.on('mousedown', function (event) {
     controls.enabled = false; // Disable orbit controls while dragging
     const onMouseMove = (event) => {
       const mouse = new THREE.Vector2();
@@ -200,12 +136,13 @@ function createTextSprite(text, font, size, color) {
 
       if (intersects.length > 0) {
         const intersect = intersects[0];
-        textSprite.position.copy(intersect.point);
+        const newPosition = intersect.point;
+        sprite.position.copy(newPosition);
       }
     };
 
     const onMouseUp = () => {
-      controls.enabled = true; // Re-enable orbit controls
+      controls.enabled = true;
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
     };
@@ -215,73 +152,58 @@ function createTextSprite(text, font, size, color) {
   });
 }
 
-// Function to update text sprite
-function updateTextSprite(text, font, size, color) {
-  if (textSprite) {
-    object.remove(textSprite);
+// Function to handle view switching
+function switchView(view) {
+  if (view === 'front') {
+    camera.position.set(0, 0, 50); // Set camera position for front view
+  } else if (view === 'back') {
+    camera.position.set(0, 0, -50); // Set camera position for back view
   }
-  createTextSprite(text, font, size, color);
 }
 
-// Event listener for adding text
-document.getElementById("addTextButton").addEventListener("click", function () {
-  const text = document.getElementById("textInput").value;
-  const font = document.getElementById("fontSelect").value;
-  const size = parseFloat(document.getElementById("textSize").value);
-  const color = document.getElementById("textColorPicker").value;
-  createTextSprite(text, font, size, color);
-});
+// Function to handle saving the 3D model
+function saveModel() {
+  alert("3D model saved with your chosen design!");
+  // Implement save functionality here
+}
 
-document.getElementById("textInput").addEventListener("input", function () {
-  const text = this.value;
-  const font = document.getElementById("fontSelect").value;
-  const size = parseFloat(document.getElementById("textSize").value);
-  const color = document.getElementById("textColorPicker").value;
-  updateTextSprite(text, font, size, color);
-});
+// Add event listeners for view buttons
+const frontViewButton = document.getElementById("frontViewButton");
+if (frontViewButton) {
+  frontViewButton.addEventListener("click", () => switchView('front'));
+}
 
-document.getElementById("fontSelect").addEventListener("change", function () {
-  const text = document.getElementById("textInput").value;
-  const font = this.value;
-  const size = parseFloat(document.getElementById("textSize").value);
-  const color = document.getElementById("textColorPicker").value;
-  updateTextSprite(text, font, size, color);
-});
+const backViewButton = document.getElementById("backViewButton");
+if (backViewButton) {
+  backViewButton.addEventListener("click", () => switchView('back'));
+}
 
-document.getElementById("textSize").addEventListener("input", function () {
-  const text = document.getElementById("textInput").value;
-  const font = document.getElementById("fontSelect").value;
-  const size = parseFloat(this.value);
-  const color = document.getElementById("textColorPicker").value;
-  updateTextSprite(text, font, size, color);
-});
+const saveButton = document.getElementById("saveButton");
+if (saveButton) {
+  saveButton.addEventListener("click", saveModel);
+}
 
 function animate() {
   requestAnimationFrame(animate);
-
-  if (object) {
-    // Remove rotation, bobbing, and tilting
-  }
   renderer.render(scene, camera);
+  console.log("Rendering scene");
 }
 
 window.addEventListener("resize", function () {
-  camera.aspect = container.clientWidth / container.clientHeight;
+  camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(container.clientWidth, container.clientHeight); // Adjust renderer size to fit the container
+  renderer.setSize(container.clientWidth, container.clientHeight);
 });
 
-document.onmousemove = (e) => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-};
+animate();
 
-// Add color picker functionality
+// Garment color update
 document.getElementById("garmentColorPicker").addEventListener("input", (e) => {
   const color = e.target.value;
+  document.getElementById("colorPickerCircle").style.backgroundColor = color;
 
-  // Apply color to the T-shirt model material
-  if (object) {
+  // Update color in Three.js model
+  if (typeof object !== "undefined" && object) {
     object.traverse((node) => {
       if (node.isMesh && node.material) {
         node.material.color.set(color);
@@ -289,5 +211,3 @@ document.getElementById("garmentColorPicker").addEventListener("input", (e) => {
     });
   }
 });
-
-animate();

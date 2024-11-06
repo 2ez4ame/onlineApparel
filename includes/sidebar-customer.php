@@ -26,7 +26,7 @@
       top: 0;
       left: 0;
       border-radius: 0 10px 10px 0;
-      z-index: 1000; /* Ensure sidebar is above other elements */
+      z-index: 1000;
     }
 
     .sidebar a, .sidebar button {
@@ -37,8 +37,7 @@
       align-items: center;
       justify-content: space-between;
       margin-top: 10px;
-      z-index: 1001; 
-      
+      z-index: 1001;
     }
 
     .sidebar a:hover, .sidebar button:hover {
@@ -52,13 +51,9 @@
       border: none;
       cursor: pointer;
       border-radius: 5px;
-      text-align: center; /* Center text horizontally */
-      display: flex; /* Use flexbox for centering */
-      align-items: center; /* Center items vertically */
-      justify-content: center; /* Center items horizontally */
-      padding: 10px; /* Add padding for better spacing */
-      width: 100%; /* Ensure the button takes the full width of its container */
-      box-sizing: border-box; /* Include padding and border in the element's total width and height */
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .color-picker-circle {
@@ -72,7 +67,7 @@
       border: 1px solid #ccc;
     }
 
-    .color-picker, .text-options, .image-options {
+    .color-picker, .text-options, .image-options, .background-options {
       display: none;
     }
 
@@ -95,6 +90,11 @@
     <button href="#">Upload your design <span><i class='bx bx-arrow-from-bottom' style="font-size:30px;"></i></span></button>
     <button href="#">Export <span><i class='bx bx-exit' style="font-size:30px;"></i></span></button>
     
+    <!-- Add buttons for switching views and saving the model -->
+    <button id="frontViewButton">Front View</button>
+    <button id="backViewButton">Back View</button>
+    <button id="saveButton">Save Design</button>
+
     <!-- Garment Color Section -->
     <a href="#home" id="garmentColorToggle">Garment Color <span><i class='bx bxs-chevron-down'></i></span></a>
     <div id="colorPickerCircle" class="color-picker-circle"></div>
@@ -124,29 +124,27 @@
       <input type="file" id="backImageUpload" class="text-input" accept="image/*">
     </div>
 
-    <a href="#contact">Background <span><i class='bx bxs-chevron-down'></i></span></a>
+    <!-- Background Section -->
+    <a href="#contact" id="backgroundToggle">Background <span><i class='bx bxs-chevron-down'></i></span></a>
+    <div class="background-options" id="backgroundOptions">
+      <input type="color" id="backgroundColorPicker" class="text-input" value="#D9D9D9">
+    </div>
 </div>
 
-
 <script>
-  // Toggle color picker circle display
+  // Toggle garment color picker display
   document.getElementById("garmentColorToggle").addEventListener("click", () => {
-    const colorCircle = document.getElementById("colorPickerCircle");
-    colorCircle.style.display = colorCircle.style.display === "none" ? "block" : "none";
+    const colorPicker = document.getElementById("garmentColorPicker");
+    colorPicker.style.display = colorPicker.style.display === "none" ? "block" : "none";
   });
 
-  // Show color picker on color circle click
-  document.getElementById("colorPickerCircle").addEventListener("click", () => {
-    document.getElementById("garmentColorPicker").click();
-  });
-
-  // Update T-shirt model color on color change
+  // Garment color update
   document.getElementById("garmentColorPicker").addEventListener("input", (e) => {
     const color = e.target.value;
     document.getElementById("colorPickerCircle").style.backgroundColor = color;
-    
-    // Update T-shirt model color in Three.js
-    if (object) {
+
+    // Update color in Three.js model
+    if (typeof object !== "undefined" && object) {
       object.traverse((node) => {
         if (node.isMesh && node.material) {
           node.material.color.set(color);
@@ -155,47 +153,28 @@
     }
   });
 
-  // Toggle text options display
+  // Text options display
   document.getElementById("textToggle").addEventListener("click", () => {
     const textOptions = document.getElementById("textOptions");
     textOptions.style.display = textOptions.style.display === "none" ? "block" : "none";
   });
 
-  // Add event listener for text input, font, size, and color
-  document.getElementById("textInput").addEventListener("input", updateText);
-  document.getElementById("fontSelect").addEventListener("change", updateText);
-  document.getElementById("textSize").addEventListener("input", updateText);
-  document.getElementById("textColorPicker").addEventListener("input", updateText);
-
-  function updateText() {
-    const text = document.getElementById("textInput").value;
-    const font = document.getElementById("fontSelect").value;
-    const size = document.getElementById("textSize").value;
-    const color = document.getElementById("textColorPicker").value;
-
-    // Assuming Three.js text mesh object exists (create or update it here)
-    if (textMesh) {
-      textMesh.text = text;
-      textMesh.font = font;
-      textMesh.fontSize = size;
-      textMesh.color = color;
-      textMesh.needsUpdate = true; // Mark for re-render
-    }
-  }
-
-  // Toggle image options display
+  // Toggle image options
   document.getElementById("imageToggle").addEventListener("click", () => {
     const imageOptions = document.getElementById("imageOptions");
     imageOptions.style.display = imageOptions.style.display === "none" ? "block" : "none";
   });
 
-  // Add text to 3D model on button click
-  document.getElementById("addTextButton").addEventListener("click", () => {
-    const text = document.getElementById("textInput").value;
-    const font = document.getElementById("fontSelect").value;
-    const size = parseFloat(document.getElementById("textSize").value);
-    const color = document.getElementById("textColorPicker").value;
-    createTextSprite(text, font, size, color);
+  // Toggle background color picker
+  document.getElementById("backgroundToggle").addEventListener("click", () => {
+    const backgroundOptions = document.getElementById("backgroundOptions");
+    backgroundOptions.style.display = backgroundOptions.style.display === "none" ? "block" : "none";
+  });
+
+  // Update background color
+  document.getElementById("backgroundColorPicker").addEventListener("input", (e) => {
+    const color = e.target.value;
+    document.body.style.backgroundColor = color;
   });
 </script>
 </body>
