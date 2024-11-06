@@ -98,8 +98,12 @@
     height: 10px;
     margin-left: 100px;
 }
+.box .form-check-input{
+    margin-top: 10px;
+}
 .box-2{
-    margin-left: 5%0px;
+    margin-left: 50px;
+    margin-top: 40px;
 }
 .box h3{
     font-size: 50px;
@@ -172,4 +176,30 @@
     margin-left: 100px;
     margin-top: 550px;
 }
+.box-3{
+    height: 8px;
+}
+.box-3 .form-check-input{
+    margin-top: -1px;
+    height: 18 px;
+}
+.btn-product{
+    height: 80px;
+    margin-top: -20px;
+    width: 80px;
+    margin-left:50px;
+}
+.d-block{
+    margin-top: -10px;
+    height: 70px;
+    width: 90px;
+    margin-left: 2px;
+    margin-top: 5px;
+}
+.btn-product{
+    margin-top: -80px;
+    
+}
+
+
 </style>

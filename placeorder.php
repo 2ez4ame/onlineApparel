@@ -61,9 +61,13 @@
     <div class="form-check">
   <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
   <label class="form-check-label" for="flexCheckDefault">
-    Default checkbox
-  </label>
+    Product
+  </label
 </div>
+<h4 style="display: inline-block; margin-right: 10px; margin-left:600px; font-size:15px;">Unit Price</h4>
+<h4 style="display: inline-block; margin-right: 10px; margin-left:190px; font-size:15px;">Quantity</h4>
+<h4 style="display: inline-block; margin-right: 10px; margin-left:180px; font-size:15px;">Total Price</h4>
+<h4 style="display: inline-block; margin-left:150px; font-size:15px;">Actions</h4>
     </div>
   </div>
 </div>
@@ -74,6 +78,9 @@
     <div class="form-check">
   <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
 </div>
+<div class="create-box-4">
+    <button class="btn-product btn-primary ">  <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 1a"> </button> <!-- Replace with your desired button text -->
+  </div>
     </div>
     </div>
     </div>
@@ -81,6 +88,14 @@
   <div class="create-box-3">
     
     <div class="box-3">
-      
+    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+    <label class="form-check-label" for="flexCheckDefault">
+    Select all
+</label>
+<h4 style="display: inline-block; margin-right: 10px; margin-left:620px; font-size:15px;">Total(item) :</h4>
+<h4 style="display: inline-block; margin-right: 10px; margin-left:540px; font-size:15px;">Total Quantity</h4>
+
+
     </div>
+    
   </div>
