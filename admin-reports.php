@@ -1,198 +1,46 @@
+<?php include('includes/header.php'); ?>
+<?php include('css/adminreportstyle.php') ?>
 <link rel="shortcut icon" href="icons/logo.png" type="image/x-icon">
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'> 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<style>
-  .dashboard-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr; 
-    gap: 30px; 
-    max-width: 1200px;
-    width: 100%;
-  }
 
-  .small-box-container, .large-box-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px; 
-  }
+<nav class="navbar">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <button type="button" class="btn-icon">
+        <img class="a" src="icons/logo.png" width="60" height="50" alt="GZEL Logo">
+      </button>
+      <div class="brand-text">
+        <span class="gz-text">GZEL<br>Digital Design and Printing</span>
+      </div>
+    </a>
+  </div>
+  <div class="container-notification">
+    <button type="button" class="btn btn-bg-light position-relative">
+    <img class="a" src="icons/notification.png" width="40" height="30" alt="notification-logo">
+  <span class="position-absolute top-0 start-90 translate-middle badge rounded-pill bg-danger">
+    9+
+    <span class="visually-hidden">Unread messages</span>
+  </span>
+</button>
+</div>
 
-  .large-box-container {
-    margin-bottom: 10px;
-    grid-row: span 2;
-    width: 900px;
-    position: relative; /* Added for positioning the profit text */
-    display: flex;
-    flex-direction: column;
-  }
-
-  .overall-profit {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 16px;
-    color: #4CAF50;
-  }
-
-  .dashboard-box {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-
-  .small-box-container {
-    margin-right: 30px; 
-    padding: 0; 
-    box-sizing: border-box; 
-    width: 300px; 
-  }
-
-  .small-box-title {
-    align-self: flex-start; 
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color:#31511E;
-  }
-
-  .chart-container {
-    position: relative;
-    height: 400px; /* Increased height */
-    width: 100%;
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-  }
-
-  .chart-container canvas {
-    width: 100%; /* Ensure the canvas takes full width */
-    height: 100%; /* Ensure the canvas takes full height */
-  }
-
-  .date-range-selector {
-    margin-bottom: 10px;
-  }
-
-  .date-range-selector select {
-    cursor: pointer; /* Apply cursor pointer to the select element */
-  }
-
-  #dateRange option{
-    cursor: pointer;
-  }
-
-  .progress-bar-container {
-    width: 100%;
-    height: 10px;
-    background-color: #e0e0e0;
-    border-radius: 5px;
-    overflow: hidden;
-    padding: 2px;
-  }
-
-  .progress-bar {
-    width: 45%;
-    height: 100%;
-    background-color: #4CAF50;
-  }
-
-  .history-box {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .history-header {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    font-size: 16px;
-    font-weight: bold;
-    border-bottom: 1px solid #e0e0e0; /* Added separator */
-    padding-bottom: 10px; /* Added padding for spacing */
-    color:#31511E;
-  }
-
-  .history-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    width: 100%; /* Ensure the item takes full width */
-  }
-
-  .history-item .item-text {
-    display: flex;
-    align-items: center; /* Align items vertically */
-    flex-grow: 1; /* Allow the text to take available space */
-  }
-
-  .history-item .item-time {
-    text-align: right; 
-    flex-shrink: 0; /* Prevent the time from shrinking */
-    margin-left: 20px; /* Add space between text and time */
-  }
-  
-  .icon {
-    margin-top: 10px;
-  }
-
-  .stat-number{
-    font-size: 45px;
-    font-weight: bold;
-    margin-right: 40px;
-    margin-left: 40px; /* Added margin to the left */
-  }
-
-  .icons{
-    margin-right: 25px;
-  }
-
-  .circle-box {
-    width: 10px;
-    height: 10px;
-    background-color: #31511E;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 10px; /* Space between circle and text */
-    vertical-align: middle; /* Align with text */
-  }
-
-  .circle-box span .hours{
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .history-item span {
-    display: flex;
-    align-items: center; /* Align items vertically */
-  }
-
-  .showHistory{
-    color: #4CAF50;
-    cursor: pointer;
-    border: none;
-    background-color: transparent;
-    padding:7px;
-    border-radius: 5px;
-    font-weight: bold;
-  }
-  .showHistory:hover{
-    color: white;
-    cursor: pointer;
-    border: none;
-    background-color: #508D4E;
-    transition: 0.5s;
-  }
-  .history-item.hidden {
-    display: none;
-  }
-</style>
-
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  <img class="a" src="icons/account.png" width="40" height="30" alt="account-logo"> 
+  </a>
+  <ul class="dropdown-menu" aria-labelledby="accountDropdown">
+    <li><a class="dropdown-item" href="#">Profile</a></li>
+    <li><a class="dropdown-item" href="#">Settings</a></li>
+    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</a></li>
+  </ul>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<?php include 'includes/sidebar-admin.php'; ?>
 <div class="dashboard-container">
   <div class="small-box-container">
     <div class="dashboard-box small-box" style="display: flex; flex-direction: column; align-items: center;">

@@ -26,6 +26,8 @@
       transition: width 0.5s ease; /* Smoother transition */
       overflow: hidden;
       position: relative;
+      margin-top: 100px;
+      height: 600px;
     }
 
     /* Expanded sidebar */
