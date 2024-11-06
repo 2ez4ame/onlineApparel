@@ -11,40 +11,27 @@ include 'includes/header-customer.php';
   <title>Customization</title>
   <style>
     .content {
-      margin-left: 250px; /* Adjust content margin to account for sidebar width */
-      margin-top: 70px; /* Adjust content margin to account for header height */
+      margin-left: 250px;
+      margin-top: 70px;
       padding: 20px;
     }
     #container3D {
       width: 100%;
-      height: 100vh; /* Full viewport height */
+      height: calc(100vh - 70px); /* Adjust height to account for header */
+      background-color: transparent; /* Remove background color */
     }
   </style>
 </head>
 <body>
-  <?php include 'includes/sidebar-customer.php'; // Include sidebar ?>
+  <?php include 'includes/sidebar-customer.php'; ?>
   
   <main>
-    <!-- Remove the container3D div as it is now included in the header -->
+    <div id="container3D"></div>
+    <div class="controls">
+      
+    </div>
   </main>
   
   <script type="module" src="js/main.js"></script>
-  <script>
-    function incrementQuantity() {
-        var quantityInput = document.getElementById('quantity');
-        var currentValue = parseInt(quantityInput.value);
-        if (!isNaN(currentValue)) {
-            quantityInput.value = currentValue + 1;
-        }
-    }
-
-    function decrementQuantity() {
-        var quantityInput = document.getElementById('quantity');
-        var currentValue = parseInt(quantityInput.value);
-        if (!isNaN(currentValue) && currentValue > 1) {
-            quantityInput.value = currentValue - 1;
-        }
-    }
-  </script>
 </body>
 </html>
