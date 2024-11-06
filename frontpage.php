@@ -255,7 +255,7 @@
     <div class="text-center my-4">
         <div class="create-box">
             <h2>Create your own design and Order now!</h2>
-            <a href="create_page.php" class="btn btn-success btn-lg">Create</a>
+            <a href="login.php" class="btn btn-success btn-lg">Create</a>
         </div>
     </div>
 </div>

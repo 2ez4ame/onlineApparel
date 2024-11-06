@@ -32,18 +32,19 @@ CREATE TABLE `users` (
   `firstname` varchar(50) NOT NULL,
   `lastname` varchar(50) CHARACTER SET armscii8 COLLATE armscii8_general_ci NOT NULL,
   `email` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `role` varchar(20) NOT NULL DEFAULT 'customer' -- Add role column with default value 'customer'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `firstname`, `lastname`, `email`, `password`) VALUES
-(1, '', '', '', 'admin123'),
-(2, '', '', 'admin1@gmail.com', '1'),
-(3, 'roel', 'fernandez', '1@gmail.com', '$2y$10$RIlcgjlnarc5ROkcH4lqGux2s3m120Qjmdd154xR3/FTunWIkzH6C'),
-(4, 'roel', 'castillano', '2@gmail.com', '$2y$10$TeyfBEecBc0O.bXTVnuuh.89Nfy5rRXl9MeZ/5ltBZ2AcgWZTm/x6');
+INSERT INTO `users` (`id`, `firstname`, `lastname`, `email`, `password`, `role`) VALUES
+(1, '', '', '', 'admin123', 'admin'),
+(2, '', '', 'admin1@gmail.com', '$2y$10$e0MYzXyjpJS7Pd0RVvHwHeFQx8h7O8z5t5vE5z5z5z5z5z5z5z5z5', 'admin'), -- hashed password for 'admin'
+(3, 'roel', 'fernandez', '1@gmail.com', '$2y$10$RIlcgjlnarc5ROkcH4lqGux2s3m120Qjmdd154xR3/FTunWIkzH6C', 'customer'),
+(4, 'roel', 'castillano', '2@gmail.com', '$2y$10$TeyfBEecBc0O.bXTVnuuh.89Nfy5rRXl9MeZ/5ltBZ2AcgWZTm/x6', 'customer');
 
 --
 -- Indexes for dumped tables

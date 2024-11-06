@@ -1,6 +1,6 @@
 <?php
 // Create a connection
-$conn = new mysqli('localhost', 'root', '', 'user_db');
+$conn = new mysqli('localhost', 'root', '', 'apparel');
 
 // Check connection
 if ($conn->connect_error) {

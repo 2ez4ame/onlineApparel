@@ -91,9 +91,7 @@
     <button href="#">Export <span><i class='bx bx-exit' style="font-size:30px;"></i></span></button>
     
     <!-- Add buttons for switching views and saving the model -->
-    <button id="frontViewButton">Front View</button>
-    <button id="backViewButton">Back View</button>
-    <button id="saveButton">Save Design</button>
+   
 
     <!-- Garment Color Section -->
     <a href="#home" id="garmentColorToggle">Garment Color <span><i class='bx bxs-chevron-down'></i></span></a>
