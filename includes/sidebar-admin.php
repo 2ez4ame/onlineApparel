@@ -108,7 +108,7 @@
       <i class='bx bx-palette'></i>
       <span>Create Design</span>
     </button>
-    <button class="sidebar-button">
+    <button onclick="loadContent('admin-manage.php')" class="sidebar-button">
       <i class='bx bx-box'></i>
       <span>Orders</span>
     </button>
@@ -127,6 +127,7 @@
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
           document.getElementById('content').innerHTML = xhr.responseText;
+          reinitializeScripts();
         }
       };
       xhr.send();

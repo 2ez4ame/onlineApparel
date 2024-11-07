@@ -41,8 +41,7 @@ include 'includes/header-admin.php';
       background-color: #D9D9D9;
       display: flex;
       flex-direction: column;
-      align-items: center; 
-      justify-content: center; 
+       
     }
     
     .h1text, .text {
@@ -75,6 +74,7 @@ include 'includes/header-admin.php';
     <?php include 'includes/sidebar-admin.php'; ?>
     
     <div class="content" id="content">
+      <!-- Initial content or placeholder -->
       <div class="h1text">
         <h1>Start your Design now!</h1>
       </div>
@@ -110,13 +110,87 @@ include 'includes/header-admin.php';
     function reinitializeScripts() {
       const scripts = document.getElementById('content').getElementsByTagName('script');
       for (let i = 0; i < scripts.length; i++) {
-        eval(scripts[i].innerText);
+        const script = document.createElement('script');
+        script.text = scripts[i].innerText;
+        document.body.appendChild(script).parentNode.removeChild(script);
       }
-      // Ensure initializeHistory is called after scripts are reinitialized
-      if (typeof initializeHistory === 'function') {
-        initializeHistory();
+      // Reinitialize Chart.js if necessary
+      if (typeof Chart !== 'undefined') {
+        const charts = document.querySelectorAll('.chart');
+        charts.forEach(chart => {
+          const ctx = chart.getContext('2d');
+          new Chart(ctx, {
+            type: 'bar', // or 'line', 'pie', etc.
+            data: {
+              labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+              datasets: [{
+                label: 'Dataset 1',
+                data: [65, 59, 80, 81, 56, 55, 40],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+        });
       }
+      // Reinitialize dropdown functionality
+      document.querySelectorAll('.dropdown-button').forEach(button => {
+        button.addEventListener('click', toggleDropdown);
+      });
+      window.addEventListener('click', function(event) {
+        if (!event.target.matches('.dropdown-button') && !event.target.closest('.dropdown')) {
+          const dropdowns = document.getElementsByClassName('dropdown-content');
+          for (let i = 0; i < dropdowns.length; i++) {
+            const openDropdown = dropdowns[i];
+            if (openDropdown.style.display === 'block') {
+              openDropdown.style.display = 'none';
+            }
+          }
+        }
+      });
     }
+
+    function toggleDropdown() {
+      const dropdownContent = this.nextElementSibling;
+      dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function toggleHistory() {
+      const historyItems = document.querySelectorAll('.history-box .history-item');
+      const button = document.querySelector('.showHistory span');
+      const isHidden = button.textContent === 'Show all history';
+
+      historyItems.forEach((item, index) => {
+        if (index !== 0) {
+          item.classList.toggle('hidden', !isHidden);
+        }
+      });
+
+      button.textContent = isHidden ? 'Hide history' : 'Show all history';
+    }
+
+    // Ensure only the first history item is visible on page load
+    function initializeHistory() {
+      const historyItems = document.querySelectorAll('.history-box .history-item');
+      const button = document.querySelector('.showHistory span');
+
+      historyItems.forEach((item, index) => {
+        if (index !== 0) {
+          item.classList.add('hidden');
+        }
+      });
+
+      button.textContent = 'Show all history';
+    }
+
 
     // Reinitialize the DOMContentLoaded event listener
     document.addEventListener('DOMContentLoaded', () => {
@@ -126,4 +200,4 @@ include 'includes/header-admin.php';
     });
   </script>
 </body>
-</html>
+</html> 

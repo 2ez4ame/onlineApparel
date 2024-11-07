@@ -4,6 +4,23 @@
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'> 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<<<<<<< HEAD
+=======
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #D9D9D9;
+  }
+  .dashboard-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 30px; 
+    max-width: 1200px;
+    width: 100%;
+  }
+>>>>>>> upstream/main
 
 <nav class="navbar">
   <div class="container">
@@ -238,4 +255,36 @@
   }
 
   document.addEventListener('DOMContentLoaded', initializeHistory);
+</script>
+
+<div class="dashboard-container">
+  <div class="chart-container">
+    
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('myChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar', // or 'line', 'pie', etc.
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+          label: 'Dataset 1',
+          data: [65, 59, 80, 81, 56, 55, 40],
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  });
 </script>
