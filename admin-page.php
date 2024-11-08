@@ -160,7 +160,22 @@ include 'includes/header-admin.php';
 
     function toggleDropdown() {
       const dropdownContent = this.nextElementSibling;
+      console.log('Dropdown button clicked');
+      console.log('Dropdown content:', dropdownContent);
       dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Close the dropdown if clicked outside
+    window.onclick = function(event) {
+      if (!event.target.matches('.dropdown-button') && !event.target.closest('.dropdown')) {
+        const dropdowns = document.getElementsByClassName('dropdown-content');
+        for (let i = 0; i < dropdowns.length; i++) {
+          const openDropdown = dropdowns[i];
+          if (openDropdown.style.display === 'block') {
+            openDropdown.style.display = 'none';
+          }
+        }
+      }
     }
 
     function toggleHistory() {
@@ -191,13 +206,15 @@ include 'includes/header-admin.php';
       button.textContent = 'Show all history';
     }
 
-
     // Reinitialize the DOMContentLoaded event listener
     document.addEventListener('DOMContentLoaded', () => {
       if (typeof initializeHistory === 'function') {
         initializeHistory();
       }
+      document.querySelectorAll('.dropdown-button').forEach(button => {
+        button.addEventListener('click', toggleDropdown);
+      });
     });
   </script>
 </body>
-</html> 
+</html>

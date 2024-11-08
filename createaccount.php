@@ -225,19 +225,19 @@ $conn->close();
     <form class="row g-3" action="createaccount.php" method="POST">
   <div class="col-md-6">
    
-    <input type="text" name="firstname"  class="form-control-0" id="inputEmail4" placeholder="First name">
+    <input type="text" name="firstname"  class="form-control-0 text-center font-weight-bold" id="inputEmail4" placeholder="First name" style="text-align:center;">
   </div>
   <div class="col-md-6">
     
-    <input type="text" name="lastname" class="form-control-01" id="inputLastname" placeholder="Last name">
+    <input type="text" name="lastname" class="form-control-01 text-center font-weight-bold" id="inputLastname" placeholder="Last name" style="text-align:center;">
   </div>
   <div class="col-12">
     
-    <input type="email" name="email" class="form-control-1" id="inputAddress" placeholder="Email">
+    <input type="email" name="email" class="form-control-1 text-center font-weight-bold" id="inputAddress" placeholder="Email" style="text-align:center;">
   </div>
   <div class="col-12">
     
-    <input type="password" name="password" class="form-control-2" id="inputpassword" placeholder="Enter your password">
+    <input type="password" name="password" class="form-control-2 text-center font-weight-bold" id="inputpassword" placeholder="Enter your password" style="text-align:center;">
   </div>
 
   <div class="form-check">

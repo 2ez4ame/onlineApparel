@@ -199,7 +199,7 @@
   </div>
 
   <div class="dropdown">
-    <button class="dropdown-button" onclick="toggleDropdown()">
+    <button class="dropdown-button">
       Select
       <i class='bx bx-chevron-down'></i>
     </button>
@@ -237,7 +237,9 @@
 
 <script>
   function toggleDropdown() {
-    const dropdownContent = document.getElementById('dropdownContent');
+    const dropdownContent = this.nextElementSibling;
+    console.log('Dropdown button clicked');
+    console.log('Dropdown content:', dropdownContent);
     dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
   }
 
@@ -253,4 +255,10 @@
       }
     }
   }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.dropdown-button').forEach(button => {
+      button.addEventListener('click', toggleDropdown);
+    });
+  });
 </script>

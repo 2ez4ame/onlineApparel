@@ -52,7 +52,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <a href="login.php" class="btn btn-primary">Logout</a>
+        <a href="login.php" class="btn btn-primary" id="confirmLogout">Logout</a>
       </div>
     </div>
   </div>
@@ -83,5 +83,12 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+  document.getElementById('confirmLogout').addEventListener('click', function() {
+    // Add your logout logic here
+    window.location.href = 'login.php';
+  });
+</script>
 
 <?php include('css/userhomestyle.php'); ?>

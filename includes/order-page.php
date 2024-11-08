@@ -1,7 +1,3 @@
-<?php
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,6 +24,7 @@
         width: 1300px;
         height: 600px;
         margin-right: 50px; 
+        position: relative;
     }
 
     .form-section {
@@ -81,13 +78,6 @@
         border-radius: 5px;
         padding: 8px;
         margin: 0 5px;
-        -moz-appearance: textfield; /* Remove spinner controls in Firefox */
-    }
-
-    .quantity-input input::-webkit-outer-spin-button,
-    .quantity-input input::-webkit-inner-spin-button {
-        -webkit-appearance: none; /* Remove spinner controls in Chrome, Safari, Edge, and Opera */
-        margin: 0;
     }
 
     .quantity-input button {
@@ -115,6 +105,8 @@
     }
 
     .place-order-btn {
+        display:flex;
+        flex-direction: column;
         padding: 12px;
         background-color: #4CAF50;
         color: #fff;
@@ -122,6 +114,7 @@
         border-radius: 5px;
         font-size: 16px;
         cursor: pointer;
+        margin-top: 10px;
     }
 
     .place-order-btn:hover {
@@ -147,13 +140,8 @@
         font-weight: bold;
     }
 
-    /* Styles for payment method section */
     .payment-method {
-        display: flex;
-        flex-direction: column;
-        margin-top: 20px;
-        margin-bottom: 9px;
-        font-weight: bold;
+        display: none;
     }
 
     .payment-method-header {
@@ -174,20 +162,18 @@
         margin-left: 5px;
     }
 
-    /* Modal background */
     .modal-background {
+        display: none;
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: none; /* Hidden by default */
+        background-color: rgba(0, 0, 0, 0.5);
         justify-content: center;
         align-items: center;
     }
 
-    /* Modal container */
     .modal-container {
         background-color: #fff;
         border-radius: 8px;
@@ -197,14 +183,12 @@
         position: relative;
     }
 
-    /* Modal header */
     .modal-header {
         font-size: 18px;
         font-weight: bold;
         margin-bottom: 20px;
     }
 
-    /* Close button */
     .close-btn {
         position: absolute;
         top: 10px;
@@ -215,7 +199,34 @@
         cursor: pointer;
     }
 
-    /* Payment option */
+    .payment-option {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .payment-option input {
+        margin-right: 10px;
+    }
+
+    .confirm-btn {
+        width: 100%;
+        padding: 10px;
+        background-color: #4CAF50;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    .confirm-btn:hover {
+        background-color: #45a049;
+    }
+
     .payment-option {
         display: flex;
         align-items: center;
@@ -225,8 +236,13 @@
         font-size: 16px;
         cursor: pointer;
     }
-
+    .payment-option label{
+        margin-right: 260px;
+        margin-top: 7px;
+    }
     .payment-option i {
+       
+        flex-direction: column;
         font-size: 20px;
         color: #555;
         margin-right: 10px;
@@ -273,9 +289,8 @@
         background-color: #45a049;
     }
 
-    /* Checkmark circle */
     .checkmark-circle {
-        display: inline-flex;
+        display: none;
         align-items: center;
         justify-content: center;
         width: 20px;
@@ -290,19 +305,50 @@
         font-size: 14px;
         color: green;
     }
+
+    .order-close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+    }
+    
+    .order-toggle-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .payment-form {
+        display: none;
+    }
+
+    #paypal-link{
+        text-decoration: none;
+    }
+    
   </style>
+  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=PHP"></script>
 </head>
 <body>
-    <div class="order-container">
-        <!-- Form Section on the Left -->
-        <div class="form-section">
-            <h2>Order</h2>
+        <button class="order-toggle-btn" onclick="toggleOrderContainer()">Close</button>
+        <div class="order-container">
+            <button class="order-close-btn" onclick="closeOrderContainer()">&times;</button>
+            <div class="form-section">
+                <h2>Order</h2>
 
             <div class="form-group">
                 <label for="quantity">Quantity</label>
                 <div class="quantity-input">
                     <button type="button" onclick="decrementQuantity()">-</button>
-                    <input type="number" id="quantity" value="1" min="1"> <!-- Input for quantity -->
+                    <input type="number" id="quantity" value="1" min="1">
                     <button type="button" onclick="incrementQuantity()">+</button>
                 </div>
             </div>
@@ -329,149 +375,135 @@
                 <label for="total">Total</label>
                 <input type="text" id="total" placeholder="Total amount" readonly>
             </div>
-
-            <!-- Payment Method Section -->
-            <div class="payment-method">
-                <div class="payment-method-header" onclick="toggleModal()" style="cursor: pointer;">
-                    <label>Payment Method</label>
-                    <span>View All <i class="fas fa-chevron-right payment-arrow"></i></span>
-                </div>
-                <div id="selectedPaymentMethod" style="margin-top: 10px;"></div>
-            </div>
-
+            <button class="place-order-btn" onclick="openPaymentModal()">Select Payment Method</button>
             <button class="place-order-btn">Place Order</button>
-
-            <!-- Payment Method Modal -->
-            <div id="paymentModal" class="modal-background" style="display: none;">
-                <div class="modal-container">
-                    <button class="close-btn" onclick="toggleModal()">&times;</button>
-                    <div class="modal-header">Select Payment Method</div>
-                    <div class="payment-option" onclick="toggleDropdown('creditCardDropdown')">
-                        <i class="fas fa-credit-card"></i> Credit Card/Debit Card <i class="fas fa-chevron-down payment-arrow"></i>
-                    </div>
-                    <div id="creditCardDropdown" class="dropdown-content" style="display: none;">
-                        <div class="dropdown-item" onclick="selectPaymentMethod('Visa')">Visa <span class="checkmark">✔</span></div>
-                        <div class="dropdown-item" onclick="selectPaymentMethod('MasterCard')">MasterCard <span class="checkmark">✔</span></div>
-                        <div class="dropdown-item" onclick="selectPaymentMethod('American Express')">American Express <span class="checkmark">✔</span></div>
-                    </div>
-                    <div class="payment-option" onclick="toggleDropdown('ewalletDropdown')">
-                        <i class="fas fa-wallet"></i> E-Wallet <i class="fas fa-chevron-down payment-arrow"></i>
-                    </div>
-                    <div id="ewalletDropdown" class="dropdown-content" style="display: none;">
-                        <div class="dropdown-item" onclick="selectPaymentMethod('PayPal')">PayPal <span class="checkmark">✔</span></div>
-                        <div class="dropdown-item" onclick="selectPaymentMethod('Google Pay')">Google Pay <span class="checkmark">✔</span></div>
-                        <div class="dropdown-item" onclick="selectPaymentMethod('Apple Pay')">Apple Pay <span class="checkmark">✔</span></div>
-                    </div>
-                    <div class="payment-option" onclick="toggleDropdown('overCounterDropdown')">
-                        <i class="fas fa-store"></i> Over the Counter <i class="fas fa-chevron-down payment-arrow"></i>
-                    </div>
-                    <div id="overCounterDropdown" class="dropdown-content" style="display: none;">
-                        <div class="dropdown-item" onclick="selectPaymentMethod('7-Eleven')">7-Eleven <span class="checkmark">✔</span></div>
-                        <div class="dropdown-item" onclick="selectPaymentMethod('CVS')">CVS <span class="checkmark">✔</span></div>
-                        <div class="dropdown-item" onclick="selectPaymentMethod('Walmart')">Walmart <span class="checkmark">✔</span></div>
-                    </div>
-                    <div class="payment-option" onclick="toggleDropdown('bankTransferDropdown')">
-                        <i class="fas fa-university"></i> Bank Transfer <i class="fas fa-chevron-down payment-arrow"></i>
-                    </div>
-                    <div id="bankTransferDropdown" class="dropdown-content" style="display: none;">
-                        <div class="dropdown-item" onclick="selectPaymentMethod('Bank of America')">Bank of America <span class="checkmark">✔</span></div>
-                        <div class="dropdown-item" onclick="selectPaymentMethod('Chase')">Chase <span class="checkmark">✔</span></div>
-                        <div class="dropdown-item" onclick="selectPaymentMethod('Wells Fargo')">Wells Fargo <span class="checkmark">✔</span></div>
-                    </div>
-                    <button class="confirm-btn" onclick="confirmPaymentMethod()">Confirm</button>
-                </div>
-            </div>
         </div>
-
-        <!-- Size Chart Section on the Right -->
+        <div class="payment-method-modal">
+            
+        </div>
         <div class="size-chart-section">
-            <h2>Sizes</h2>
+            <h2>Size Chart</h2>
             <table class="size-table">
-                <tr>
-                    <th>Size</th>
-                    <th>Bust (in)</th>
-                    <th>Waist (in)</th>
-                    <th>Shoulder (in)</th>
-                </tr>
-                <tr>
-                    <td>XS</td>
-                    <td>30-32</td>
-                    <td>23-25</td>
-                    <td>14-15</td>
-                </tr>
-                <tr>
-                    <td>S</td>
-                    <td>32-34</td>
-                    <td>25-27</td>
-                    <td>15-16</td>
-                </tr>
-                <tr>
-                    <td>M</td>
-                    <td>34-36</td>
-                    <td>27-29</td>
-                    <td>16-17</td>
-                </tr>
-                <tr>
-                    <td>L</td>
-                    <td>36-38</td>
-                    <td>29-31</td>
-                    <td>17-18</td>
-                </tr>
-                <tr>
-                    <td>XL</td>
-                    <td>38-40</td>
-                    <td>31-33</td>
-                    <td>18-19</td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>Size</th>
+                        <th>Bust</th>
+                        <th>Waist</th>
+                        <th>Shoulder</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Small</td>
+                        <td>32"</td>
+                        <td>24"</td>
+                        <td>14"</td>
+                    </tr>
+                    <tr>
+                        <td>Medium</td>
+                        <td>34"</td>
+                        <td>26"</td>
+                        <td>15"</td>
+                    </tr>
+                    <tr>
+                        <td>Large</td>
+                        <td>36"</td>
+                        <td>28"</td>
+                        <td>16"</td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>
 
+    <div class="modal-background" id="paymentModal">
+        <div class="modal-container">
+            <button class="close-btn" onclick="closePaymentModal()">&times;</button>
+            <div class="modal-header">Select Payment Method</div>
+            <div class="payment-option">
+                <input type="radio" id="paypal" name="payment" value="paypal">
+                <label for="paypal">PayPal</label>
+            </div>
+            <div id="paypal-button-container" style="display:none;"></div>
+        </div>
+    </div>
+
     <script>
-        // Function to increment quantity
         function incrementQuantity() {
-            const quantityInput = document.getElementById('quantity');
+            var quantityInput = document.getElementById("quantity");
             quantityInput.value = parseInt(quantityInput.value) + 1;
         }
 
-        // Function to decrement quantity
         function decrementQuantity() {
-            const quantityInput = document.getElementById('quantity');
-            if (quantityInput.value > 1) {
+            var quantityInput = document.getElementById("quantity");
+            if (parseInt(quantityInput.value) > 1) {
                 quantityInput.value = parseInt(quantityInput.value) - 1;
             }
         }
 
-        // Function to toggle modal display
-        function toggleModal() {
-            const modal = document.getElementById('paymentModal');
-            modal.style.display = modal.style.display === 'none' ? 'flex' : 'none';
+        function closeOrderContainer() {
+            const orderContainer = document.querySelector('.order-container');
+            orderContainer.style.display = 'none';
         }
 
-        // Function to toggle dropdown display
-        function toggleDropdown(dropdownId) {
-            const dropdown = document.getElementById(dropdownId);
-            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        function toggleOrderContainer() {
+            const orderContainer = document.querySelector('.order-container');
+            const toggleButton = document.querySelector('.order-toggle-btn');
+            if (orderContainer.style.display === 'none' || orderContainer.style.display === '') {
+                orderContainer.style.display = 'flex';
+                toggleButton.textContent = 'Close';
+            } else {
+                orderContainer.style.display = 'none';
+                toggleButton.textContent = 'Open';
+            }
         }
 
-        // Function to select payment method
-        function selectPaymentMethod(method) {
-            selectedMethod = method;
-            const items = document.querySelectorAll('.dropdown-item');
-            items.forEach(item => {
-                item.querySelector('.checkmark').style.display = 'none';
+        function openPaymentModal() {
+            document.getElementById('paymentModal').style.display = 'flex';
+            const paypalButtonContainer = document.getElementById('paypal-button-container');
+            const paypalRadio = document.getElementById('paypal');
+
+            paypalRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    paypalButtonContainer.style.display = 'block';
+                    renderPayPalButton();
+                }
             });
-            event.target.querySelector('.checkmark').style.display = 'inline';
         }
 
-        // Function to confirm payment method
-        function confirmPaymentMethod() {
-            const selectedPaymentMethodDiv = document.getElementById('selectedPaymentMethod');
-            selectedPaymentMethodDiv.innerHTML = `${selectedMethod} <span class="checkmark-circle"></span>`;
-            toggleModal();
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
         }
 
-        let selectedMethod = '';
+        function renderPayPalButton() {
+            if (!document.querySelector('#paypal-button-container > div')) {
+                paypal.Buttons({
+                    createOrder: function(data, actions) {
+                        // Set up the transaction details
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: '10.00' // Replace with actual total amount
+                                }
+                            }]
+                        });
+                    },
+                    onApprove: function(data, actions) {
+                        // Capture the funds from the transaction
+                        return actions.order.capture().then(function(details) {
+                            alert('Transaction completed by ' + details.payer.name.given_name);
+                            closePaymentModal();
+                        });
+                    },
+                    onError: function(err) {
+                        console.error('Error during transaction', err);
+                        alert('An error occurred. Please try again.');
+                    }
+                }).render('#paypal-button-container');
+            }
+        }
+
+        document.querySelector('.place-order-btn').addEventListener('click', openPaymentModal);
     </script>
 </body>
 </html>

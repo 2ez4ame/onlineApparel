@@ -12,6 +12,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($email) || empty($password)) {
         $error_message = "Both email and password fields are required.";
     } else {
+        // Log the email to check if it's being captured correctly
+        error_log("Email entered: " . $email);
+
         $stmt = $conn->prepare("SELECT id, password FROM users WHERE email = ?");
         if ($stmt === false) {
             die('Prepare failed: ' . htmlspecialchars($conn->error));
@@ -42,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 $_SESSION['firstname'] = $firstname;
 
-                if ($email == 'admin1@gmail.com') {
+                if (strtolower($email) == '123@gmail.com') { // Convert email to lowercase for comparison
                     header("Location: admin-page.php");
                 } else {
                     header("Location: userhome.php");
@@ -78,7 +81,7 @@ $conn->close();
   </div>
 </div>
 
-<?php if (!empty($error_message)): ?>
+<?php if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($error_message)): ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
@@ -212,6 +215,9 @@ document.addEventListener('DOMContentLoaded', function() {
     margin-left: 330px;
 }
 
+    .create-box-9 .form-text a {
+        text-decoration: none; /* Remove text decoration */
+    }
 
     .carousel {
         background-color: #f8f9fa;
@@ -245,12 +251,15 @@ document.addEventListener('DOMContentLoaded', function() {
     border-radius: 20px;
     margin-top: 60px;
     margin-left: -15px;
-    font-size: 14px;
+    font-size: 20px;
     padding: 20px;
     width: 100%; 
     height: 80px;
     border-color: black;
     border-width: 2px;
+    text-align: center; 
+    font-weight:    bold;
+    
   }
   .create-box-9 .form-text {
     color: white;
@@ -328,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
     font-size: 22px; /* Adjust the font size as needed */
     font-weight: bold; /* Adjust the font weight */
     text-align: center; /* Centers the placeholder text */
-    color: #aaa; /* Optional: Change the color of the placeholder */
+    color: #aaa; 
 }
 
 
@@ -434,7 +443,6 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </div>
-
 <div class="container-2">
     <!-- Second Box with Carousel -->
     <div class="col-md-4 grid-box grid-box-2">
@@ -566,11 +574,11 @@ document.addEventListener('DOMContentLoaded', function() {
             <form method="POST" action=""> 
                 <label class="form-label">GZEL</label><br>
                 <label class="form-label-1">Digital Design and Printing</label>
-                <div class="mb-3">
-                    <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Email address" required>
+                <div class="mb-3" style="text-align:center;">
+                    <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Email address" required style="text-align: center;">
                 </div>
                 <div class="mb-3">
-                    <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Password" required>
+                    <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Password" required style="text-align: center; text-decoration:none;">
                 <div id="emailHelp" class="form-text"><a href="createaccount.php">Create account</a></div>
                 </div>
                 

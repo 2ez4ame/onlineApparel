@@ -1,0 +1,43 @@
+<html>
+<head>
+    <title>Loader</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/tailspin.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+        }
+        .loader {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <script>
+          document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOM fully loaded and parsed');
+      
+      if (customElements.get('l-spiral')) {
+        console.log('<l-spiral> is defined');
+      } else {
+        console.error('<l-spiral> is not defined');
+      }
+      
+      const loaderContainer = document.createElement('div');
+      loaderContainer.classList.add('loader');
+      loaderContainer.innerHTML = `
+        <l-tailspin
+          size="40"
+          speed="0.9"
+          color="green"
+        ></l-tailspin>
+      `;
+      document.body.appendChild(loaderContainer);
+    });
+    </script>
+</body>
+</html>

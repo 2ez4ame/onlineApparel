@@ -152,13 +152,14 @@
     }
   </style>
   <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=PHP"></script>
 </head>
 <body>
   <div class="custom-header">
     <span class="menu-icon" onclick="openModal()">☰</span>
     <div class="separator"></div>
     <div class="suggested-design">
-      Suggested design 
+      Suggested Design 
     </div>
     <div class="arrow-down">
       <i class='bx bxs-chevron-down'></i>
@@ -170,7 +171,7 @@
     </div>
     <div class="separator" style="margin-left: 40px;"></div> 
     <div class="place-order" style="font-size: 15px; text-decoration:none;"   >
-      <a href="javascript:void(0);" onclick="loadOrderForm()">Place an order</a>
+      <a href="javascript:void(0);" onclick="loadOrderForm()">Place order</a>
     </div>
     <input type="text" id="designName" class="design-name-input" placeholder="Untitled Design" style="margin-left: 800px; border: 1px solid #ccc; padding: 5px;">
     <div class="separator" style="margin-left: 12px;"></div> 
@@ -192,14 +193,7 @@
     <div id="container3D" style="width: 100%; height: 100%;"></div> <!-- Adjust the container3D to fit within the modelContainer -->
   </div>
 
-  <div class="modal-overlay" id="menuModal">
-    <div class="modal-content">
-      <span class="close-icon" onclick="closeModal()">✖</span>
-      <button onclick="handleMenuOption('newDesign')">New Design File</button>
-      <button onclick="handleMenuOption('saveDesign')">Save as New Design</button>
-      <button onclick="handleMenuOption('options')">Options</button>
-    </div>
-  </div>
+
 
   <script>
         window.onload = function() {
@@ -226,30 +220,80 @@
         }
 
         function loadOrderForm() {
-    
-    let existingOrderForm = document.getElementById('order-form-container');
-    
-    if (existingOrderForm) {
+        let existingOrderForm = document.getElementById('order-form-container');
         
-        existingOrderForm.scrollIntoView(); 
-        return;
-    }
+        if (existingOrderForm) {
+            if (existingOrderForm.style.display === 'none' || existingOrderForm.style.display === '') {
+                existingOrderForm.style.display = 'block';
+            } else {
+                existingOrderForm.style.display = 'none';
+            }
+            existingOrderForm.scrollIntoView();
+            return;
+        }
 
-    const orderFormContainer = document.createElement('div'); 
-    orderFormContainer.id = 'order-form-container'; 
-    orderFormContainer.style.marginTop = '80px';
-    orderFormContainer.style.padding = '20px'; 
+        const orderFormContainer = document.createElement('div'); 
+        orderFormContainer.id = 'order-form-container'; 
+        orderFormContainer.style.marginTop = '80px';
+        orderFormContainer.style.padding = '20px'; 
+        orderFormContainer.style.backgroundColor = '#fff'; // Ensure background color is set
+        orderFormContainer.style.boxShadow = '0px 4px 8px rgba(0, 0, 0, 0.2)'; // Add box shadow for better visibility
+        
+        fetch('includes/order-page.php') // Use Fetch API to get the order form
+            .then(response => response.text())
+            .then(data => {
+                orderFormContainer.innerHTML = data; 
+                document.body.appendChild(orderFormContainer); 
+                orderFormContainer.scrollIntoView(); 
+            })
+            .catch(error => console.error('Error loading order form:', error));
+    }
     
-    fetch('includes/order-page.php') // Use Fetch API to get the order form
-        .then(response => response.text())
-        .then(data => {
-            orderFormContainer.innerHTML = data; 
-            document.body.appendChild(orderFormContainer); 
-            orderFormContainer.scrollIntoView(); 
-        })
-        .catch(error => console.error('Error loading order form:', error));
-}
+    function openPaymentModal() {
+            document.getElementById('paymentModal').style.display = 'flex';
+            const paypalButtonContainer = document.getElementById('paypal-button-container');
+            const paypalRadio = document.getElementById('paypal');
+
+            paypalRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    paypalButtonContainer.style.display = 'block';
+                    renderPayPalButton();
+                }
+            });
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        function renderPayPalButton() {
+            if (!document.querySelector('#paypal-button-container > div')) {
+                paypal.Buttons({
+                    createOrder: function(data, actions) {
+                        // Set up the transaction details
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: '10.00' // Replace with actual total amount
+                                }
+                            }]
+                        });
+                    },
+                    onApprove: function(data, actions) {
+                        // Capture the funds from the transaction
+                        return actions.order.capture().then(function(details) {
+                            alert('Transaction completed by ' + details.payer.name.given_name);
+                            closePaymentModal();
+                        });
+                    },
+                    onError: function(err) {
+                        console.error('Error during transaction', err);
+                        alert('An error occurred. Please try again.');
+                    }
+                }).render('#paypal-button-container');
+            }
+        }
+
 </script>
-  </script>
 </body>
-</html>
+</html> 

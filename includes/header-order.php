@@ -25,6 +25,7 @@
       padding: 10px 15px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       width: 100%;
+      position: relative;
     }
 
     .logo {
@@ -147,6 +148,14 @@
     .notification-content p:hover {
       background-color: #f1f1f1;
     }
+
+    .close-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 20px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -185,6 +194,8 @@
 
       </div>
     </nav>
+    <i class='bx bx-x close-icon' id="closeIcon"></i>
   </header>
+  
 </body>
 </html>

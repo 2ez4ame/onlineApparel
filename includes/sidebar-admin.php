@@ -102,7 +102,7 @@
       <i class='bx bx-bar-chart-alt-2'></i>
       <span>Reports</span>
       </button>
-    <button class="sidebar-button">
+    <button onclick="loadContent('customize.php')"class="sidebar-button">
       <i class='bx bx-palette'></i>
       <span>Create Design</span>
     </button>
