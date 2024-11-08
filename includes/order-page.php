@@ -387,29 +387,47 @@
                 <thead>
                     <tr>
                         <th>Size</th>
-                        <th>Bust</th>
-                        <th>Waist</th>
-                        <th>Shoulder</th>
+                        <th>Bust(in)</th>
+                        <th>Waist(in)</th>
+                        <th>Shoulder(in)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Small</td>
-                        <td>32"</td>
-                        <td>24"</td>
-                        <td>14"</td>
+                        <td>XS</td>
+                        <td>30-32"</td>
+                        <td>23-25"</td>
+                        <td>14-15"</td>
                     </tr>
                     <tr>
-                        <td>Medium</td>
-                        <td>34"</td>
-                        <td>26"</td>
-                        <td>15"</td>
+                        <td>S</td>
+                        <td>32-34"</td>
+                        <td>25-27"</td>
+                        <td>15-16"</td>
                     </tr>
                     <tr>
-                        <td>Large</td>
-                        <td>36"</td>
-                        <td>28"</td>
-                        <td>16"</td>
+                        <td>M</td>
+                        <td>36-38"</td>
+                        <td>29-31"</td>
+                        <td>16-17"</td>
+                    </tr>
+                    <tr>
+                        <td>L</td>
+                        <td>36-38"</td>
+                        <td>29-31"</td>
+                        <td>17-18"</td>
+                    </tr>
+                    <tr>
+                        <td>XL</td>
+                        <td>38-40"</td>
+                        <td>31-33"</td>
+                        <td>18-19"</td>
+                    </tr>
+                    <tr>
+                        <td>XXL</td>
+                        <td>40-42"</td>
+                        <td>33-35"</td>
+                        <td>19-20"</td>
                     </tr>
                 </tbody>
             </table>

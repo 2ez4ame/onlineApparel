@@ -1,6 +1,14 @@
 <?php
+
 include 'includes/header-admin.php';
+include('databaseconnection.php');
+
+
+
+
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

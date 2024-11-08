@@ -5,14 +5,12 @@ include('databaseconnection.php');
 $error_message = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-   
     $email = $_POST['email'];
     $password = $_POST['password'];
 
     if (empty($email) || empty($password)) {
         $error_message = "Both email and password fields are required.";
     } else {
-        // Log the email to check if it's being captured correctly
         error_log("Email entered: " . $email);
 
         $stmt = $conn->prepare("SELECT id, password FROM users WHERE email = ?");
@@ -32,20 +30,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['email'] = $email;
                 $_SESSION['user_id'] = $user_id;
 
-                $sql = "SELECT firstname FROM users WHERE id = ?";
-                $stmt = $conn->prepare($sql);
-                if ($stmt === false) {
-                    die('Prepare failed: ' . htmlspecialchars($conn->error));
-                }
+                // Get firstname for session
+                $stmt->close(); // Close previous statement
+                $stmt = $conn->prepare("SELECT firstname FROM users WHERE id = ?");
                 $stmt->bind_param("i", $user_id);
                 $stmt->execute();
                 $stmt->bind_result($firstname);
                 $stmt->fetch();
+                $_SESSION['firstname'] = $firstname;
                 $stmt->close();
 
-                $_SESSION['firstname'] = $firstname;
-
-                if (strtolower($email) == '123@gmail.com') { // Convert email to lowercase for comparison
+                // Redirect based on email
+                if (strtolower($email) == '123@gmail.com') {
                     header("Location: admin-page.php");
                 } else {
                     header("Location: userhome.php");
@@ -53,9 +49,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 exit();
             } else {
                 $error_message = "Invalid password. Please try again.";
+                error_log("Invalid password entered for email: " . $email);
             }
         } else {
             $error_message = "No user found with that email address.";
+            error_log("No user found with email: " . $email);
         }
 
         $stmt->close();
@@ -65,41 +63,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $conn->close();
 ?>
 
-
+<!-- Error Modal -->
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="errorModalLabel">Error</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" id="errorModalBody">
-        
-      </div>
-     
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="errorModalBody">
+                <?php echo $error_message; ?>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <?php if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($error_message)): ?>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
-    document.getElementById('errorModalBody').innerText = "<?php echo $error_message; ?>";
-    errorModal.show();
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+        errorModal.show();
+    });
 </script>
 <?php endif; ?>
 
+<!-- Styles -->
 <style>
     .carousel-item1 img {
-        
         object-fit: cover;
         border: 2px solid #28a745;
         border-radius: 15px;
-        height:500px;
+        height: 500px;
     }
-    /* Unique classes for each grid box */
     .grid-box-1 {
         padding: 0px;
         border: 5px solid #ddd;
@@ -108,12 +103,10 @@ document.addEventListener('DOMContentLoaded', function() {
         height: 500px;
         margin-left: -120px;
     }
-
     .grid-box-2 {
         width: 550px;
         padding: 10px;
     }
-    
     .carousel-item2 img {
         height: 250px;
         width: 600px;
@@ -130,13 +123,13 @@ document.addEventListener('DOMContentLoaded', function() {
         height: 200px;
     }
     .grid-box-3 {
-    padding: 0px;
-    width: 780px;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-    height: 900px; /* Same height as container-2 */
-}
+        padding: 0px;
+        width: 780px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+        height: 900px;
+    }
     .carousel-item3 img {
         height: 200px;
         object-fit: cover;
@@ -156,8 +149,6 @@ document.addEventListener('DOMContentLoaded', function() {
         border: 2px solid #28a745;
         border-radius: 15px;
     }
-    
-    
     .grid-box-5 {
         padding: 0px;
         border: 2px solid #ddd;
@@ -172,7 +163,6 @@ document.addEventListener('DOMContentLoaded', function() {
         border: 2px solid #28a745;
         border-radius: 15px;
     }
-     
     .grid-box-6 {
         padding: 0px;
         border: 2px solid #ddd;
@@ -182,13 +172,11 @@ document.addEventListener('DOMContentLoaded', function() {
         width: 700px;
     }
     .carousel-item7 img {
-        
         object-fit: cover;
         border: 2px solid #28a745;
         border-radius: 15px;
-        height:350px;
+        height: 350px;
     }
-    /* Unique classes for each grid box */
     .grid-box-7 {
         padding: 0px;
         border: 5px solid #ddd;
@@ -198,230 +186,102 @@ document.addEventListener('DOMContentLoaded', function() {
         margin-left: -120px;
     }
     .carousel-item8 img {
-       width: 740px !important; 
+        width: 740px !important;
         object-fit: cover;
-        
         border-radius: 15px;
-        height:230px;
+        height: 230px;
     }
-    /* Unique classes for each grid box */
     .grid-box-8 {
-    border: 2px solid #28a745; /* Green border */
-    width: 730px; /* Same width as the image */
-    height: 240px; /* Same height as the image */
-    border-radius: 15px; /* Rounded corners */
-    background-color: #f9f9f9; /* Light background */
-    margin-top: 270px;
-    margin-left: 330px;
-}
-
-    .create-box-9 .form-text a {
-        text-decoration: none; /* Remove text decoration */
+        border: 2px solid #28a745;
+        width: 730px;
+        height: 240px;
+        border-radius: 15px;
+        background-color: #f9f9f9;
+        margin-top: 270px;
+        margin-left: 330px;
     }
-
+    .create-box-9 .form-text a {
+        text-decoration: none;
+    }
     .carousel {
         background-color: #f8f9fa;
     }
     .create-box {
-        border: 2px solid #28a745; /* Green border */
+        border: 2px solid #28a745;
         width: 730px;
         height: 350px;
-        border-radius: 15px; /* Rounded corners */
-        background-color: #f9f9f9; /* Light background */
-        display: inline-block; /* To make the box as small as the content */
+        border-radius: 15px;
+        background-color: #f9f9f9;
+        display: inline-block;
         margin-top: 20px;
-        
     }
-    
-
     .create-box-9 {
-    width: 700px; 
-    height: 750px;
-    max-width: 1000px; /* Limit maximum width */
-    margin: 0 auto; /* Center it horizontally */
-    margin-left: 550px;
-    padding: 10px;
-    background-color: #74AB6E;
-    border-radius: 20px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-
-  .create-box-9 .form-control {
-    border-radius: 20px;
-    margin-top: 60px;
-    margin-left: -15px;
-    font-size: 20px;
-    padding: 20px;
-    width: 100%; 
-    height: 80px;
-    border-color: black;
-    border-width: 2px;
-    text-align: center; 
-    font-weight:    bold;
-    
-  }
-  .create-box-9 .form-text {
-    color: white;
-    margin-left: 400px;
-    font-size: 18px;
-    font-weight: bold;
-    color: darkgreen;
-    text-decoration: none;
-  }
-
-  .create-box-9 .form-label{
-    margin-top: 15px;
-    font-size: 60px;
-    font-weight: bold;
-    color: white;
-    
-  }
-  .create-box-9 .form-label-1{
-    color: white;
-    font-size: 35px;
-    font-weight: bold;
-
-  }
-  .create-box-9 button {
-    margin-top: 40px;
-    margin-left: -15px; 
-    width: 650px; /* Full width button */
-    height: 70px;
-    padding: 10px;
-    font-size: 30px;
-    font-weight: bold;
-    margin-right: 10px;
-    background-color: white;
-    border-color: black;
-    border-radius: 10px;
-  }
-  .create-box-9 {
-    display: flex;
-    
-    align-items: center; /* Vertically center the buttons */
-    padding: 40px; /* Add padding if needed */
-}
-
-.create-box-9 .btn-1{
-    border-radius: 15px;
-    width: 130px;
-    height: 70px;
-    padding: 10px;
-    font-size: 30px;
-    font-weight: bold;
-    margin-right: 120px;
-       
-}
-.create-box-9 .btn-2 {
-    margin-right: -10px;
-    border-radius: 15px;
-    width: 130px;
-    height: 70px;
-    padding: 10px;
-    font-size: 30px;
-    font-weight: bold;
-    margin-top: -210px;
-}
-.create-box-9 .btn-3 {
-    margin-right: 10px;
-    margin-left: 100px;
-    border-radius: 15px;
-    width: 130px;
-    height: 70px;
-    padding: 10px;
-    font-size: 30px;
-    font-weight: bold;
-}
-.create-box-9 .form-control::placeholder {
-    font-size: 22px; /* Adjust the font size as needed */
-    font-weight: bold; /* Adjust the font weight */
-    text-align: center; /* Centers the placeholder text */
-    color: #aaa; 
-}
-
-
-
-    .container-1 {
-        height: 2px;
-        margin-top: 5px;
-        width: 75%;
-        padding-left: 140px;
+        width: 700px;
+        height: 750px;
+        max-width: 1000px;
+        margin: 0 auto;
+        margin-left: 550px;
+        padding: 10px;
+        background-color: #74AB6E;
+        border-radius: 20px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     }
-
-    .container-2 {
-        margin: 0 auto; /* Centers the container horizontally */
+    .create-box-9 .form-control {
+        border-radius: 20px;
+        margin-top: 60px;
+        margin-left: -15px;
+        font-size: 20px;
+        padding: 20px;
+        width: 100%;
+        height: 80px;
+        border-color: black;
+        border-width: 2px;
         text-align: center;
-        width: 1000px;/* Ensure consistent width with grid-box-2 */
+        font-weight: bold;
     }
-
-    .container-3 {
-     margin-left: 1120px;
-    margin-top: -645px;
-    width: 750px;
-    height: auto; Same width as container-2
-}
-
-    .container-4 {
-        text-align: center;
-        margin-top: 50px;
-        margin-right: 270px;
-    
+    .create-box-9 .form-text {
+        color: white;
+        margin-left: 400px;
+        font-size: 18px;
+        font-weight: bold;
+        color: darkgreen;
+        text-decoration: none;
     }
-    .container-5 {
-        text-align: center;
-        margin-top: 250px;
-        margin-left: 1200px;
-        
+    .create-box-9 .form-label {
+        margin-top: 15px;
+        font-size: 60px;
+        font-weight: bold;
+        color: white;
     }
-    .container-6 {
-        text-align: center;
-        margin-top: 110px;
-        margin-left: 1200px;
-        
+    .create-box-9 .form-label-1 {
+        color: white;
+        font-size: 35px;
+        font-weight: bold;
     }
-    .container-7 {
-        height: 2px;
-        margin-top: -160px;
-        width: 75%;
-        padding-left: 140px;
+    .create-box-9 button {
+        margin-top: 40px;
+        margin-left: -15px;
+        width: 650px;
+        height: 70px;
+        padding: 10px;
+        font-size: 30px;
+        font-weight: bold;
+        margin-right: 10px;
+        background-color: white;
+        border-color: black;
+        border-radius: 10px;
     }
-    .container-8 {
-        height: 2px;
-        margin-top: -160px;
-        width: 85%;
-        padding-left: 140px;
-        
+    .create-box-9 {
+        display: flex;
+        align-items: center;
+        padding: 40px;
     }
-    
-    .container-9 {
-    text-align: center;
-    margin-top: -330px;
-    margin-right: 250px;
-    position: relative; /* or 'absolute' if needed */
-    z-index: 999; /* Increase the z-index value to bring it in front */
-    
-}
-    
-    .btn{
-        height: 100px;
-        width: 670px;
-        margin-top: 30px;
-        color: black;
+    .create-box-9 .btn {
+        margin-top: 20px;
+        padding: 15px;
     }
-  .create-box h2 {
-    font-size: 50px; /* Increase/decrease font size as needed */
-    font-weight: bold; /* Optional: Makes the text bolder */
-    margin-top: 60px;
-    color: white;
-}
-.create-box a{
-    font-size: 50px;
-    font-weight: bold;
-    color: black;
-    text-decoration: none;
-}
 </style>
+>
 
 <div class="container-1">
     <div class="row">

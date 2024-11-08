@@ -14,10 +14,17 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <title>APPAREL</title>
+    <title>GZEL Online apparel</title>
+    <link rel="shortcut icon" href="icons/logo.png" type="image/x-icon">
+    
 </head>
 <body>
        
   
 </body>
+<script>
+  document.getElementById('confirmLogout').addEventListener('click', function() {
+    window.location.href = 'login2.php';
+  });
+</script>
 </html>

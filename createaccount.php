@@ -217,7 +217,7 @@ $conn->close();
                 <!-- H2 Heading with 'Log In' as a clickable link -->
                 <h1 style="font-size:50px; margin-left:-250px; margin-top: 30px;">Create an account</h1>
                 <h2 style="font-size:30px; margin-left:-210px; margin-bottom:50px;">Already have an account? 
-                <a href="login.php" class="breadcrumb-link" style="font-size:25px; font-weight:bold;">Log In</a>
+                <a href="login2.php" class="breadcrumb-link" style="font-size:25px; font-weight:bold;">Log In</a>
                 </h2>
             </div>
 

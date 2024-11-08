@@ -1,3 +1,40 @@
+<?php 
+include('databaseconnection.php');
+session_start();
+
+$first_name = "Admin"; // Default value
+
+if (isset($_SESSION['user_id'])) {
+  // Get user ID from session
+  $user_id = $_SESSION['user_id'];
+
+  // Debug: Check if user_id exists
+  if (empty($user_id)) {
+    echo "No user ID in session.";
+    exit;
+  }
+
+  // Query to fetch the first_name of the logged-in user
+  $query = "SELECT first_name FROM users WHERE user_id = ? AND role = 'admin'";
+  if ($stmt = $conn->prepare($query)) {
+      $stmt->bind_param("i", $user_id);  // Binding the user_id parameter
+      $stmt->execute();
+      $stmt->bind_result($first_name);
+      $stmt->fetch();
+      
+      if (empty($first_name)) {
+        echo "No first name found for user ID: " . $user_id;
+      }
+
+      $stmt->close();
+  } else {
+      echo "Error preparing query: " . $conn->error;
+  }
+} 
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +43,6 @@
   <link rel="shortcut icon" href="images/logo.png" type="image/x-icon">
   <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
   <link rel="shortcut icon" href="icons/logo.png" type="image/x-icon">
-  
   
   <style>
     /* Rest of your styles */
@@ -107,8 +143,6 @@
       display: flex;
       align-items: center;
       gap: 5px;
-      
-
     }
 
     .admin a{
@@ -122,6 +156,7 @@
       cursor: pointer;
       transition: 0.3s;
     }
+
     .header a{
       text-decoration: none;
       color:black;
@@ -157,7 +192,7 @@
         <i class='bx bx-user icon ' style="font-size:35px"></i>
       </a>
       <div class="admin">
-        <a href="#">admin <i class='bx bx-chevron-down' style="font-size:25px;"></i></a>
+        <a>Welcome, <?php echo htmlspecialchars($first_name); ?> <i class='bx bx-chevron-down' style="font-size:25px;"></i></a>
       </div>
     </nav>
   </header>

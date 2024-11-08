@@ -8,13 +8,14 @@
 
  .navbar {
   background-color: #fff; /* Adjust background color if necessary */
-  padding: 20px;
+  padding: 15px;
   height: 75px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* For shadow effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
 .container {
   display: flex;
+ 
   
 }
 
@@ -50,10 +51,7 @@
   color: #9e9e9e; /* Adjust color as needed */
 }
 
-.container-notification{
-    margin-right:50px;
-    
-}
+
 .container-account{
     margin-right: 50px;
 }
@@ -76,5 +74,26 @@
   margin-right: 20px;
 
 }
+
+
+
+/* Custom class to adjust the alignment */
+.custom-account {
+    padding-top: 5px; /* Adjusts the overall padding */
+    display: flex;
+    align-items: center;
+}
+
+/* Adjust image alignment */
+.custom-account img {
+    margin-bottom: 2px; /* Move the image a bit lower */
+}
+
+/* Adjust the text alignment if needed */
+.custom-account span {
+    margin-top: 2px; /* Moves the text down slightly */
+}
+
+
 
 </style>
