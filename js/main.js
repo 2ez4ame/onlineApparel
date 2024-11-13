@@ -19,7 +19,8 @@ loader.load(
   function (gltf) {
     console.log('Model loaded:', gltf);
     object = gltf.scene;
-    object.position.set(0, -10, 0);
+    object.position.set(0, -5, 0); // Adjust the position to be smaller and fit under the header
+    object.scale.set(0.5, 0.5, 0.5); // Scale down the model
   
     // Set initial color for the T-shirt material
     object.traverse((node) => {
@@ -45,8 +46,11 @@ loader.load(
 );
 
 const renderer = new THREE.WebGLRenderer({ alpha: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(window.innerWidth, window.innerHeight - 70); // Adjust renderer size to fit under the header
 document.getElementById("container3D").appendChild(renderer.domElement);
+document.getElementById("container3D").style.position = "absolute";
+document.getElementById("container3D").style.top = "70px"; // Position under the header
+document.getElementById("container3D").style.left = "0px"; // Position to the left
 camera.position.z = objToRender === "tshirt" ? 50 : 500;
 
 const topLight = new THREE.DirectionalLight(0xFFA07A, 1);
@@ -97,9 +101,9 @@ function animate() {
 }
 
 window.addEventListener("resize", function () {
-  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.aspect = window.innerWidth / (window.innerHeight - 70);
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(window.innerWidth, window.innerHeight - 70);
 });
 
 document.onmousemove = (e) => {
@@ -108,8 +112,9 @@ document.onmousemove = (e) => {
 };
 
 // Add color picker functionality
-document.getElementById("colorPicker").addEventListener("input", (e) => {
+document.getElementById("garmentColorPicker").addEventListener("input", (e) => {
   const color = e.target.value;
+  document.getElementById("colorPicker").style.backgroundColor = color;
 
   // Apply color to the T-shirt model material
   if (object) {

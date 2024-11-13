@@ -1,8 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="icons/logo.png" type="image/x-icon">
   <title>Customization</title>
   <style>
     .custom-header {
@@ -152,9 +151,8 @@
     }
   </style>
   <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=PHP"></script>
-</head>
-<body>
+  
+
   <div class="custom-header">
     <span class="menu-icon" onclick="openModal()">☰</span>
     <div class="separator"></div>
@@ -190,11 +188,11 @@
   </div>
   
   <div id="modelContainer">
-    <div id="container3D" style="width: 100%; height: 100%;"></div> <!-- Adjust the container3D to fit within the modelContainer -->
+    <div id="container3D" style="width: 100%; height: 500px;"></div> 
   </div>
 
 
-
+    
   <script>
         window.onload = function() {
         const savedDesignName = localStorage.getItem("designName") || "Untitled Design";
@@ -295,5 +293,3 @@
         }
 
 </script>
-</body>
-</html> 

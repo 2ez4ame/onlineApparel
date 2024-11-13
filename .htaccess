@@ -1,0 +1,5 @@
+# Enable mod_rewrite (if not already enabled)
+RewriteEngine On
+
+# Redirect 404 errors to custom page
+ErrorDocument 404 /onlineapparel/404error.php

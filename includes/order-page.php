@@ -335,7 +335,7 @@
     }
     
   </style>
-  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=PHP"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=AU5THB8u5xqTfY6An508wUQgMHD_3iX4Ggpc86E21lAYcRlU_7fA83cmpnpUVQnzwnMZZPxOUeEQqwCL&currency=PHP"></script>
 </head>
 <body>
         <button class="order-toggle-btn" onclick="toggleOrderContainer()">Close</button>
@@ -446,82 +446,80 @@
         </div>
     </div>
 
-    <script>
-        function incrementQuantity() {
-            var quantityInput = document.getElementById("quantity");
-            quantityInput.value = parseInt(quantityInput.value) + 1;
+
+        <script>
+    // Increment the quantity
+    function incrementQuantity() {
+        var quantityInput = document.getElementById("quantity");
+        quantityInput.value = parseInt(quantityInput.value) + 1;
+    }
+
+    // Decrement the quantity
+    function decrementQuantity() {
+        var quantityInput = document.getElementById("quantity");
+        if (parseInt(quantityInput.value) > 1) {
+            quantityInput.value = parseInt(quantityInput.value) - 1;
         }
+    }
 
-        function decrementQuantity() {
-            var quantityInput = document.getElementById("quantity");
-            if (parseInt(quantityInput.value) > 1) {
-                quantityInput.value = parseInt(quantityInput.value) - 1;
-            }
+    // Close the order container
+    function closeOrderContainer() {
+        const orderContainer = document.querySelector('.order-container');
+        orderContainer.style.display = 'none';
+    }
+
+    // Toggle the order container visibility
+    function toggleOrderContainer() {
+        const orderContainer = document.querySelector('.order-container');
+        const toggleButton = document.querySelector('.order-toggle-btn');
+        if (orderContainer.style.display === 'none' || orderContainer.style.display === '') {
+            orderContainer.style.display = 'flex'; // Show the container
+            toggleButton.textContent = 'Close'; // Change the button text to 'Close'
+        } else {
+            orderContainer.style.display = 'none'; // Hide the container
+            toggleButton.textContent = 'Open'; // Change the button text to 'Open'
         }
+    }
 
-        function closeOrderContainer() {
-            const orderContainer = document.querySelector('.order-container');
-            orderContainer.style.display = 'none';
-        }
+    // Open the payment modal
+    function openPaymentModal() {
+        const paymentModal = document.getElementById('paymentModal');
+        paymentModal.style.display = 'flex';
+    }
 
-        function toggleOrderContainer() {
-            const orderContainer = document.querySelector('.order-container');
-            const toggleButton = document.querySelector('.order-toggle-btn');
-            if (orderContainer.style.display === 'none' || orderContainer.style.display === '') {
-                orderContainer.style.display = 'flex';
-                toggleButton.textContent = 'Close';
-            } else {
-                orderContainer.style.display = 'none';
-                toggleButton.textContent = 'Open';
-            }
-        }
+    // Close the payment modal
+    function closePaymentModal() {
+        const paymentModal = document.getElementById('paymentModal');
+        paymentModal.style.display = 'none';
+    }
 
-        function openPaymentModal() {
-            document.getElementById('paymentModal').style.display = 'flex';
-            const paypalButtonContainer = document.getElementById('paypal-button-container');
-            const paypalRadio = document.getElementById('paypal');
-
-            paypalRadio.addEventListener('change', function() {
-                if (this.checked) {
-                    paypalButtonContainer.style.display = 'block';
-                    renderPayPalButton();
+    // Show the PayPal button when PayPal is selected
+    document.getElementById('paypal').addEventListener('change', function() {
+        const paypalButtonContainer = document.getElementById('paypal-button-container');
+        if (this.checked) {
+            paypalButtonContainer.style.display = 'block';
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: 100.00 // Placeholder amount, adjust based on your calculation
+                            }
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        alert('Transaction completed by ' + details.payer.name.given_name);
+                    });
                 }
-            });
+            }).render('#paypal-button-container');
+        } else {
+            paypalButtonContainer.style.display = 'none';
         }
+    });
+</script>
 
-        function closePaymentModal() {
-            document.getElementById('paymentModal').style.display = 'none';
-        }
-
-        function renderPayPalButton() {
-            if (!document.querySelector('#paypal-button-container > div')) {
-                paypal.Buttons({
-                    createOrder: function(data, actions) {
-                        // Set up the transaction details
-                        return actions.order.create({
-                            purchase_units: [{
-                                amount: {
-                                    value: '10.00' // Replace with actual total amount
-                                }
-                            }]
-                        });
-                    },
-                    onApprove: function(data, actions) {
-                        // Capture the funds from the transaction
-                        return actions.order.capture().then(function(details) {
-                            alert('Transaction completed by ' + details.payer.name.given_name);
-                            closePaymentModal();
-                        });
-                    },
-                    onError: function(err) {
-                        console.error('Error during transaction', err);
-                        alert('An error occurred. Please try again.');
-                    }
-                }).render('#paypal-button-container');
-            }
-        }
-
-        document.querySelector('.place-order-btn').addEventListener('click', openPaymentModal);
-    </script>
+  
 </body>
 </html>

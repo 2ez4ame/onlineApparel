@@ -223,6 +223,41 @@ include('databaseconnection.php');
         button.addEventListener('click', toggleDropdown);
       });
     });
+
+    
+    function toggleDropdown() {
+      const dropdown = document.getElementById("dropdown");
+      dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+    }
+
+    function logout() {
+      // Add PHP code to destroy session and redirect
+      window.location.href = "login2.php";
+    }
+
+    // Optional: Close dropdown if clicked outside
+    window.onclick = function(event) {
+      if (!event.target.matches('.admin a')) {
+        const dropdown = document.getElementById("dropdown");
+        if (dropdown && dropdown.style.display === "block") {
+          dropdown.style.display = "none";
+        }
+      }
+    }
+    function logout() {
+      // Show the confirmation modal
+      document.getElementById('logoutModal').style.display = 'block';
+    }
+
+    function confirmLogout() {
+      // Proceed with the logout by redirecting to logout.php
+      window.location.href = "logout.php";
+    }
+
+    function closeModal() {
+      // Hide the confirmation modal if "No" is clicked
+      document.getElementById('logoutModal').style.display = 'none';
+    }
   </script>
 </body>
 </html>

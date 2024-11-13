@@ -4,24 +4,22 @@ include 'includes/header-customer.php';
 include 'includes/sidebar-customer.php'; // Add this line to include the sidebar
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="shortcut icon" href="icons/logo.png" type="image/x-icon">
   <title>Customization</title>
   <style>
    
   
     #container3D {
       width: 100%;
-      height: calc(100vh - 70px); 
-      background-color: transparent; /* Remove background color */
+      height: calc(100vh - 50px); 
+      
     }
   </style>
-</head>
-<body>
+
   <div id="header"><?php include 'includes/header-customer.php'; ?></div>
   <div class="content">
     <main>
@@ -32,6 +30,7 @@ include 'includes/sidebar-customer.php'; // Add this line to include the sidebar
     </main>
   </div>
   <script type="module" src="js/main.js"></script>
+ <script src="https://www.paypal.com/sdk/js?client-id=AU5THB8u5xqTfY6An508wUQgMHD_3iX4Ggpc86E21lAYcRlU_7fA83cmpnpUVQnzwnMZZPxOUeEQqwCL&currency=PHP"></script>
   <script>
          // Function to increment quantity
          function incrementQuantity() {
@@ -107,5 +106,4 @@ include 'includes/sidebar-customer.php'; // Add this line to include the sidebar
         // Add event listener to confirm payment method button
         document.getElementById('confirmPaymentButton').addEventListener('click', confirmPaymentMethod);
   </script>
-</body>
-</html>
+

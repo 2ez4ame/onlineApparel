@@ -76,13 +76,10 @@
     align-items: center;
     justify-content: space-between;
     width: 155px; 
-    margin: -5px 0 0 670px;
+    margin: -20px 0 0 670px;
   }
 
-  .dropdown-button i {
-    font-size: 20px;
-    margin-left: 5px;
-  }
+  
 
   .dropdown-content {
     display: none;
@@ -92,7 +89,7 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     z-index: 1;
     border-radius: 5px;
-    margin: 0 0 0 670px;
+    margin: -585px 0 0 670px;
   }
 
   .dropdown-content a {

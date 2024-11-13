@@ -1,23 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>3D T-Shirt Editor</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      background-color: #D9D9D9;
-    }
+
 
     .sidebar {
       width: 250px;
       height: 700px;
       margin-top: 90px;
-      background-color: #ffff;
+      background-color: #f3f3f3;
       color: black;
       display: flex;
       flex-direction: column;
@@ -27,6 +18,8 @@
       left: 0;
       border-radius: 0 10px 10px 0;
       z-index: 1000;
+      border: 1px solid #ccc;
+    
     }
 
     .sidebar a, .sidebar button {
@@ -38,36 +31,65 @@
       justify-content: space-between;
       margin-top: 10px;
       z-index: 1001;
+      font-size: 17px;
+      font-weight: 500;
+      border-radius: 10px;
+      padding: 10px;
+      
+      
     }
 
-    .sidebar a:hover, .sidebar button:hover {
-      background-color: #697565;
-      color: white;
-      transition: 0.3s;
+    .sidebar a{
+      
+    }
+
+    .sidebar a:hover{
+      border-left: 1px solid black;
+      border-top: 1px solid black;
+      border-right: 1px solid black;
+      border-bottom: 9px solid black;
+    }
+    .sidebar a:hover {
+      background-color: #fff;
+      
+      
     }
 
     .sidebar button {
-      background-color: #697565;
-      border: none;
+      background-color: #abf600;
+      
       cursor: pointer;
       border-radius: 5px;
       padding: 10px;
       width: 100%;
       box-sizing: border-box;
+      border-radius: 10px;
+      color:black;
+      font-weight:bold;
+      
+    }
+
+    .sidebar button:hover {
+      border-bottom: 9px solid black;
+      transition: 0.2s;
     }
 
     .color-picker-circle {
       width: 25px;
       height: 25px;
-      border-radius: 50%;
+      border-radius: 50px;
       background-color: #ffffff;
       display: none;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 20px;
       border: 1px solid #ccc;
     }
 
-    .color-picker, .text-options, .image-options, .background-options {
+    .color-picker {
+      display: block; /* Ensure the color picker is visible */
+    }
+
+    .text-options, .image-options, .background-options {
       display: none;
     }
 
@@ -79,23 +101,40 @@
     }
 
     .text-input {
-      padding: 5px;
+      padding: 8px;
       font-size: 14px;
+      height: 30px;
+      width: 100%;
+      margin-top:5px;
+      border-radius:3px;
+    }
+
+    #saveButton{
+      background-color: #abf600;
+      color: black;
+      font-weight: bold;
+      border-radius: 5px;
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
+      justify-content: center;
     }
   </style>
   <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-</head>
-<body>
+
 <div class="sidebar">
-    <button href="#">Upload your design <span><i class='bx bx-arrow-from-bottom' style="font-size:30px;"></i></span></button>
-    <button href="#">Export <span><i class='bx bx-exit' style="font-size:30px;"></i></span></button>
+    <button href="#">Upload your design <span><i class='bx bx-chevron-up' style="font-size:30px;"></i></span></button>
+    <button href="#">Export <span><i class='bx bx-chevron-right' style="font-size:30px;"></i></span></button>
     
     <!-- Add buttons for switching views and saving the model -->
    
 
     <!-- Garment Color Section -->
     <a href="#home" id="garmentColorToggle">Garment Color <span><i class='bx bxs-chevron-down'></i></span></a>
-    <div id="colorPickerCircle" class="color-picker-circle"></div>
+    <div id="colorPicker" class="color-picker-circle"></div>
     <input type="color" id="garmentColorPicker" class="color-picker" value="#ffffff">
     
     <!-- Text Section -->
@@ -127,6 +166,12 @@
     <div class="background-options" id="backgroundOptions">
       <input type="color" id="backgroundColorPicker" class="text-input" value="#D9D9D9">
     </div>
+
+    <div class="saveButton">
+      
+        <button id="saveButton">Save Design</button>
+      
+    </div>
 </div>
 
 <script>
@@ -139,7 +184,7 @@
   // Garment color update
   document.getElementById("garmentColorPicker").addEventListener("input", (e) => {
     const color = e.target.value;
-    document.getElementById("colorPickerCircle").style.backgroundColor = color;
+    document.getElementById("colorPicker").style.backgroundColor = color;
 
     // Update color in Three.js model
     if (typeof object !== "undefined" && object) {
@@ -175,5 +220,4 @@
     document.body.style.backgroundColor = color;
   });
 </script>
-</body>
-</html>
+

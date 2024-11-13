@@ -26,5 +26,7 @@
   document.getElementById('confirmLogout').addEventListener('click', function() {
     window.location.href = 'login2.php';
   });
+
+  
 </script>
 </html>
