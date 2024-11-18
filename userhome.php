@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_URI'] == '/onlineapparel/thispagedoesnotexist') {
       <a class="nav-link d-flex align-items-center custom-account" href="#" id="accountDropdown" role="button" aria-expanded="false">
         <i class="bx bx-user" style='font-size: 30px; margin-top:5px;'></i>
         <span style="font-weight:bold;font-size: 25px; color: black; margin-right: 5px;">Welcome,</span>
-        <span style="font-size: 20px; font-weight: bold; color: green;"><?php echo htmlspecialchars($first_name); ?></span>
+        <span style="font-size: 20px; font-weight: bold; color: #abf600;"><?php echo htmlspecialchars($first_name); ?></span>
         <i class="bx bx-chevron-down" style='font-size: 25px; color: green;'></i>
       </a>
       <ul class="dropdown-menu" aria-labelledby="accountDropdown">
