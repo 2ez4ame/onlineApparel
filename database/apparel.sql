@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 08, 2024 at 03:01 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- Generation Time: Nov 19, 2024 at 05:46 AM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,22 @@ SET time_zone = "+00:00";
 --
 -- Database: `apparel`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `designs`
+--
+
+CREATE TABLE `designs` (
+  `id` int(11) NOT NULL,
+  `color` varchar(20) DEFAULT NULL,
+  `text` text DEFAULT NULL,
+  `font` varchar(50) DEFAULT NULL,
+  `model_state` text DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -78,6 +94,56 @@ CREATE TABLE `products` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `saved_design`
+--
+
+CREATE TABLE `saved_design` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `size` varchar(50) NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `model_file_path` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `garmentColor` varchar(7) NOT NULL,
+  `textInput` text NOT NULL,
+  `fontSelect` varchar(50) NOT NULL,
+  `textSize` int(11) NOT NULL,
+  `textColor` varchar(7) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `saved_design`
+--
+
+INSERT INTO `saved_design` (`id`, `user_id`, `title`, `size`, `image_url`, `model_file_path`, `created_at`, `garmentColor`, `textInput`, `fontSelect`, `textSize`, `textColor`) VALUES
+(1, 0, '', '', '', NULL, '2024-11-19 01:43:26', '#ffffff', '', 'Arial', 16, '#000000'),
+(2, 0, '', '', '', NULL, '2024-11-19 01:43:36', '#ffffff', '', 'Arial', 16, '#000000'),
+(3, 0, '', '', '', NULL, '2024-11-19 02:09:57', '#c11515', 'roel', 'Arial', 16, '#000000'),
+(4, 0, '', '', '', NULL, '2024-11-19 02:27:26', '#9a1d1d', '', 'Arial', 16, '#000000'),
+(5, 0, '', '', '', NULL, '2024-11-19 02:28:55', '#9a1d1d', '', 'Arial', 16, '#000000');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `t_shirt_designs`
+--
+
+CREATE TABLE `t_shirt_designs` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `garment_color` varchar(7) NOT NULL,
+  `text_input` varchar(255) NOT NULL,
+  `font_select` varchar(100) NOT NULL,
+  `text_size` int(11) NOT NULL,
+  `text_color` varchar(7) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -111,6 +177,12 @@ INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `password`, 
 --
 
 --
+-- Indexes for table `designs`
+--
+ALTER TABLE `designs`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `orders`
 --
 ALTER TABLE `orders`
@@ -139,6 +211,18 @@ ALTER TABLE `products`
   ADD PRIMARY KEY (`product_id`);
 
 --
+-- Indexes for table `saved_design`
+--
+ALTER TABLE `saved_design`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `t_shirt_designs`
+--
+ALTER TABLE `t_shirt_designs`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -148,6 +232,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `designs`
+--
+ALTER TABLE `designs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -172,6 +262,18 @@ ALTER TABLE `payments`
 --
 ALTER TABLE `products`
   MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `saved_design`
+--
+ALTER TABLE `saved_design`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `t_shirt_designs`
+--
+ALTER TABLE `t_shirt_designs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
