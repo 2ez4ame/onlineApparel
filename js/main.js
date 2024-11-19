@@ -126,4 +126,54 @@ document.getElementById("garmentColorPicker").addEventListener("input", (e) => {
   }
 });
 
+document.getElementById('saveButton').addEventListener('click', function() {
+    const garmentColor = document.getElementById('garmentColorPicker').value;
+    const textInput = document.getElementById('textInput').value;
+    const fontSelect = document.getElementById('fontSelect').value;
+    const textSize = document.getElementById('textSize').value;
+    const textColor = document.getElementById('textColorPicker').value;
+
+    // Ensure the fields are populated
+    if (!garmentColor || !textInput || !fontSelect || !textSize || !textColor) {
+        alert('Please fill out all customization options before saving.');
+        return; // Prevent form submission if any field is missing
+    }
+
+    // Convert the 3D model to GLB format
+    const exporter = new THREE.GLTFExporter();
+    exporter.parse(object, function(result) {
+        const blob = new Blob([result], { type: 'application/octet-stream' });
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const modelData = event.target.result.split(',')[1]; // Get base64 string
+
+            // Send the data to the backend
+            let formData = new FormData();
+            formData.append('garmentColor', garmentColor);
+            formData.append('textInput', textInput);
+            formData.append('fontSelect', fontSelect);
+            formData.append('textSize', textSize);
+            formData.append('textColor', textColor);
+            formData.append('modelData', modelData);
+
+            fetch('save-projects.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message); // Success message
+                } else {
+                    alert(data.error); // Error message from server
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        };
+        reader.readAsDataURL(blob); // Convert to base64
+    });
+});
+
 animate();

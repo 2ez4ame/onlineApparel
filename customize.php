@@ -1,6 +1,10 @@
 <?php
+// Enable error reporting
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 include 'includes/header-customer.php';
-include 'includes/sidebar-customer.php'; // Add this line to include the sidebar
+include 'includes/sidebar-customer.php'; 
 
 // Check if a saved design ID is provided
 if (isset($_GET['id'])) {
@@ -28,6 +32,15 @@ if (isset($_GET['id'])) {
 
 <div id="header"><?php include 'includes/header-customer.php'; ?></div>
 <div class="content">
+    <div id="sidebar">
+        <?php 
+        if (file_exists('includes/sidebar-customer.php')) {
+            include 'includes/sidebar-customer.php'; 
+        } else {
+            echo "Sidebar file not found.";
+        }
+        ?>
+    </div>
     <main>
         <div id="container3D"></div>
         <div class="controls">
@@ -35,6 +48,7 @@ if (isset($_GET['id'])) {
         </div>
     </main>
 </div>
+
 <script type="module" src="js/main.js"></script>
 <script src="https://www.paypal.com/sdk/js?client-id=AU5THB8u5xqTfY6An508wUQgMHD_3iX4Ggpc86E21lAYcRlU_7fA83cmpnpUVQnzwnMZZPxOUeEQqwCL&currency=PHP"></script>
 <script>
@@ -75,6 +89,15 @@ window.onload = function() {
     const textSize = localStorage.getItem('textSize');
     const textColor = localStorage.getItem('textColor');
 
+    // Load the saved 3D model
+    const loader = new THREE.GLTFLoader();
+    loader.load('<?php echo $design['model_file_path']; ?>', function(gltf) {
+        object = gltf.scene;
+        scene.add(object);
+        camera.position.z = 5;
+        animate();
+    });
+
     // Apply saved customization to 3D model (garment color)
     if (garmentColor && object) {
         object.traverse((node) => {
@@ -104,6 +127,44 @@ function addTextToModel(textInput, textSize, fontSelect, textColor) {
         scene.add(textMesh);
     });
 }
+document.getElementById("garmentColorToggle").addEventListener("click", () => {
+  const colorPicker = document.getElementById("garmentColorPicker");
+  colorPicker.style.display = colorPicker.style.display === "none" ? "block" : "none";
+});
+
+// Garment color update
+document.getElementById("garmentColorPicker").addEventListener("input", (e) => {
+  const color = e.target.value;
+  document.getElementById("colorPicker").style.backgroundColor = color;
+
+  // Update color in Three.js model
+  if (typeof object !== "undefined" && object) {
+    object.traverse((node) => {
+      if (node.isMesh && node.material) {
+        node.material.color.set(color);
+      }
+    });
+  }
+});
+
+// Text options display
+document.getElementById("textToggle").addEventListener("click", () => {
+  const textOptions = document.getElementById("textOptions");
+  textOptions.style.display = textOptions.style.display === "none" ? "block" : "none";
+});
+
+// Toggle background color picker
+document.getElementById("backgroundToggle").addEventListener("click", () => {
+  const backgroundOptions = document.getElementById("backgroundOptions");
+  backgroundOptions.style.display = backgroundOptions.style.display === "none" ? "block" : "none";
+});
+
+// Update background color
+document.getElementById("backgroundColor").addEventListener("input", (e) => {
+  const color = e.target.value;
+  document.body.style.backgroundColor = color;
+});
+
 
 // Save button click handler to save the design
 document.getElementById('saveButton').addEventListener('click', function() {

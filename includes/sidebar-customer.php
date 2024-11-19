@@ -112,38 +112,50 @@
 <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 
 <div class="sidebar">
-    <button href="#">Upload your design <span><i class='bx bx-chevron-up' style="font-size:30px;"></i></span></button>
-    <button href="#">Export <span><i class='bx bx-chevron-right' style="font-size:30px;"></i></span></button>
+    <form id="designForm" action="save-projects.php" method="POST">
+        <button type="button">Upload your design <span><i class='bx bx-chevron-up' style="font-size:30px;"></i></span></button>
+        <button type="button">Export <span><i class='bx bx-chevron-right' style="font-size:30px;"></i></span></button>
 
-    <!-- Garment Color Section -->
-    <a href="#home" id="garmentColorToggle">Garment Color <span><i class='bx bxs-chevron-down'></i></span></a>
-    <div id="colorPicker" class="color-picker-aircle"></div>
-    <input type="color" id="garmentColorPicker" class="color-picker" value="#ffffff">
+        <!-- Title Section -->
+        <input type="text" id="title" name="title" class="text-input" placeholder="Enter title here">
 
-    <!-- Text Section -->
-    <a href="#services" id="textToggle">Text <span><i class='bx bxs-chevron-down'></i></span></a>
-    <div class="text-options" id="textOptions">
-        <input type="text" id="textInput" class="text-input" placeholder="Enter text here">
-        <select id="fontSelect" class="text-input">
-            <option value="Arial">Arial</option>
-            <option value="Times New Roman">Times New Roman</option>
-            <option value="Courier New">Courier New</option>
-            <option value="Verdana">Verdana</option>
-        </select>
-        <input type="number" id="textSize" class="text-input" placeholder="Font Size" min="8" max="72" value="16">
-        <input type="color" id="textColorPicker" class="text-input" value="#000000">
-        <button id="addTextButton">Add Text</button>
-    </div>
+        <!-- Size Section -->
+        <input type="text" id="size" name="size" class="text-input" placeholder="Enter size here">
 
-    <!-- Background Section -->
-    <a href="#about" id="backgroundToggle">Background <span><i class='bx bxs-chevron-down'></i></span></a>
-    <div class="background-options" id="backgroundOptions">
-        <input type="color" id="backgroundColor" class="text-input" value="#ffffff">
-    </div>
+        <!-- Image URL Section -->
+        <input type="text" id="imageUrl" name="imageUrl" class="text-input" placeholder="Enter image URL here">
 
-    <!-- Save Section -->
-    <button id="saveButton">Save Design</button>
+        <!-- Garment Color Section -->
+        <a href="#home" id="garmentColorToggle">Garment Color <span><i class='bx bxs-chevron-down'></i></span></a>
+        <div id="colorPicker" class="color-picker-circle"></div>
+        <input type="color" id="garmentColorPicker" name="garmentColor" class="color-picker" value="#ffffff">
+
+        <!-- Text Section -->
+        <a href="#services" id="textToggle">Text <span><i class='bx bxs-chevron-down'></i></span></a>
+        <div class="text-options" id="textOptions">
+            <input type="text" id="textInput" name="textInput" class="text-input" placeholder="Enter text here">
+            <select id="fontSelect" name="fontSelect" class="text-input">
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Verdana">Verdana</option>
+            </select>
+            <input type="number" id="textSize" name="textSize" class="text-input" placeholder="Font Size" min="8" max="72" value="16">
+            <input type="color" id="textColorPicker" name="textColor" class="text-input" value="#000000">
+            <button type="button" id="addTextButton">Add Text</button>
+        </div>
+
+        <!-- Background Section -->
+        <a href="#about" id="backgroundToggle">Background <span><i class='bx bxs-chevron-down'></i></span></a>
+        <div class="background-options" id="backgroundOptions">
+            <input type="color" id="backgroundColor" name="backgroundColor" class="text-input" value="#ffffff">
+        </div>
+
+        <!-- Save Section -->
+        <button type="submit" id="saveButton">Save Design</button>
+    </form>
 </div>
+
 
 <script>
 // Toggle garment color picker display
@@ -185,7 +197,12 @@ document.getElementById("backgroundColor").addEventListener("input", (e) => {
   document.body.style.backgroundColor = color;
 });
 
-document.getElementById('saveButton').addEventListener('click', function() {
+document.getElementById('saveButton').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const title = document.getElementById('title').value;
+    const size = document.getElementById('size').value;
+    const imageUrl = document.getElementById('imageUrl').value;
     const garmentColor = document.getElementById('garmentColorPicker').value;
     const textInput = document.getElementById('textInput').value;
     const fontSelect = document.getElementById('fontSelect').value;
@@ -193,41 +210,56 @@ document.getElementById('saveButton').addEventListener('click', function() {
     const textColor = document.getElementById('textColorPicker').value;
 
     // Ensure the fields are populated
-    if (!garmentColor || !textInput || !fontSelect || !textSize || !textColor) {
+    if (!title || !size || !imageUrl || !garmentColor || !textInput || !fontSelect || !textSize || !textColor) {
         alert('Please fill out all customization options before saving.');
         return; // Prevent form submission if any field is missing
     }
 
-    // Store the selected data in localStorage or sessionStorage
-    localStorage.setItem('garmentColor', garmentColor);
-    localStorage.setItem('textInput', textInput);
-    localStorage.setItem('fontSelect', fontSelect);
-    localStorage.setItem('textSize', textSize);
-    localStorage.setItem('textColor', textColor);
+    // Ensure the 3D object is defined
+    if (!object) {
+        alert('3D model is not loaded.');
+        return;
+    }
 
-    // Send the data to the backend
-    let formData = new FormData();
-    formData.append('garmentColor', garmentColor);
-    formData.append('textInput', textInput);
-    formData.append('fontSelect', fontSelect);
-    formData.append('textSize', textSize);
-    formData.append('textColor', textColor);
+    // Convert the 3D model to GLB format
+    const exporter = new THREE.GLTFExporter();
+    exporter.parse(object, function(result) {
+        const blob = new Blob([result], { type: 'application/octet-stream' });
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const modelData = event.target.result.split(',')[1]; // Get base64 string
 
-    // Use fetch to submit the form data to save-projects.php
-    fetch('save-projects.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            alert(data.message); // Success message
-        } else {
-            alert(data.error); // Error message from server
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
+            // Send the data to the backend
+            let formData = new FormData();
+            formData.append('title', title);
+            formData.append('size', size);
+            formData.append('imageUrl', imageUrl);
+            formData.append('garmentColor', garmentColor);
+            formData.append('textInput', textInput);
+            formData.append('fontSelect', fontSelect);
+            formData.append('textSize', textSize);
+            formData.append('textColor', textColor);
+            formData.append('modelData', modelData);
+
+            fetch('save-projects.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message); // Success message
+                    // Optionally, redirect to the saved projects page
+                    window.location.href = 'save-projects.php';
+                } else {
+                    alert(data.error); // Error message from server
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        };
+        reader.readAsDataURL(blob); // Convert to base64
     });
 });
 
@@ -249,5 +281,6 @@ function convertModelToGLB(model) {
     document.getElementById('textInput').value = "<?php echo $design['textInput']; ?>";
     document.getElementById('fontSelect').value = "<?php echo $design['fontSelect']; ?>";
     document.getElementById('textSize').value = "<?php echo $design['textSize']; ?>";
-    document.getEl
+    document.getElementById('textColorPicker').value = "<?php echo $design['textColor']; ?>";
+<?php endif; ?>
 </script>
