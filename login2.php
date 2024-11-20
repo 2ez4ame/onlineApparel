@@ -9,6 +9,9 @@ session_start();
 session_unset();
 session_destroy();
 
+// Start a new session after destroying the previous one
+session_start();
+
 // Check if form is submitted
 if (isset($_POST['email']) && isset($_POST['password'])) {
     $email = $_POST['email']; // User input for email

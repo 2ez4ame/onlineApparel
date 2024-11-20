@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 19, 2024 at 05:46 AM
+-- Generation Time: Nov 20, 2024 at 05:28 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -163,14 +163,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `password`, `phone_number`, `address`, `role`) VALUES
-(1, 'Roel', 'Fernandez', 'admin@gmail.com', 'admin', NULL, NULL, 'admin'),
-(2, 'ayskopo', NULL, '2@gmail.com', '$2y$10$IyX.lEf9eVw6VXHT0DX3XejMIQGdXP6GuiA2oFIN9Wcm5bolHLTWS', NULL, NULL, 'user'),
-(3, 'akosiroel', NULL, '1@gmail.com', '$2y$10$yBWCsQd7bBy88e.Uj1.B5.uGKIbsRCmxiUE9w.829jMaTTsk70dga', NULL, NULL, 'user'),
-(4, 'akosiroel', NULL, 'user@gmail.com', '$2y$10$FdwRPprockvGiria1Kg48.A8iv/dKqamuVCmr28HKUAYqDGP6QVMi', NULL, NULL, 'user'),
-(5, 'Roel', NULL, 'user1@gmail.com', '$2y$10$pTCcNCN3b9oUBagN1UOtaeqsSJQ/F81PifOhhUfnWNyektuaRKZce', NULL, NULL, 'user'),
-(6, 'Ayskopi', 'Fernandez', 'admin2@gmail.com', 'admin', NULL, NULL, 'admin'),
-(7, 'Ayskopiiiiiii', NULL, 'admin3@gmail.com', '$2y$10$OrhTd7PHqgq592EVf18YN.COev1DGdz7qP.w2mIka9LbTn.BVurBy', NULL, NULL, 'user'),
-(8, 'Roel', NULL, 'try@gmail.com', '$2y$10$Wuah7mG.iEsZWmMD7VDBbeRfPcY/HlbObwTTuGqhviNonV1sRrGaO', NULL, NULL, 'user');
+(10, 'Roel', NULL, 'user@gmail.com', '$2y$10$vIRxsPQoySIMXmYqRoiwsuMOoT4wGztQllgof7lxuqSpkmq/RAuTG', NULL, NULL, 'user'),
+(11, 'akosiroel', NULL, 'akosiroel@gmail.com', '$2y$10$Tg9JdoVE/H1V8kuFgdUOu.1BYMKgJeClP8Pm2B1aAXn4XS1xbQAnm', NULL, NULL, 'user'),
+(12, 'Admin', NULL, 'admin@gmail.com', '$2y$10$eQMeR0ocvq58J9rrtyixlOGVnbDbmAdsIoEqxavs1eHSay6cM8oA.', NULL, NULL, 'admin'),
+(13, 'Admin', NULL, 'admin1@gmail.com', 'admin', NULL, NULL, 'admin'),
+(14, 'adminRoel', NULL, 'adminRoel@gmail.com', 'adminRoel', NULL, NULL, 'admin');
 
 --
 -- Indexes for dumped tables
@@ -279,7 +276,7 @@ ALTER TABLE `t_shirt_designs`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Constraints for dumped tables

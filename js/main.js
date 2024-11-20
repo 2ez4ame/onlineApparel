@@ -9,7 +9,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
-let object;
+let object; // Ensure object is accessible globally
 let controls;
 let objToRender = 'tshirt';
 const loader = new GLTFLoader();
@@ -112,18 +112,52 @@ document.onmousemove = (e) => {
 };
 
 // Add color picker functionality
+document.getElementById("garmentColorToggle").addEventListener("click", () => {
+  const colorPicker = document.getElementById("garmentColorPicker");
+  colorPicker.style.display = colorPicker.style.display === "none" ? "block" : "none";
+});
+
+// Garment color update
 document.getElementById("garmentColorPicker").addEventListener("input", (e) => {
   const color = e.target.value;
   document.getElementById("colorPicker").style.backgroundColor = color;
+
+  console.log("Selected color:", color); // Debugging statement
 
   // Apply color to the T-shirt model material
   if (object) {
     object.traverse((node) => {
       if (node.isMesh && node.material) {
-        node.material.color.set(color);
+        console.log("Node material before color change:", node.material); // Debugging statement
+        if (node.material.color) {
+          node.material.color.set(color);
+          console.log("Node material after color change:", node.material); // Debugging statement
+        } else {
+          console.warn("Node material does not have a color property:", node.material); // Debugging statement
+        }
       }
     });
+  } else {
+    console.warn("Object is not defined"); // Debugging statement
   }
+});
+
+// Text options display
+document.getElementById("textToggle").addEventListener("click", () => {
+  const textOptions = document.getElementById("textOptions");
+  textOptions.style.display = textOptions.style.display === "none" ? "block" : "none";
+});
+
+// Toggle background color picker
+document.getElementById("backgroundToggle").addEventListener("click", () => {
+  const backgroundOptions = document.getElementById("backgroundOptions");
+  backgroundOptions.style.display = backgroundOptions.style.display === "none" ? "block" : "none";
+});
+
+// Update background color
+document.getElementById("backgroundColor").addEventListener("input", (e) => {
+  const color = e.target.value;
+  document.body.style.backgroundColor = color;
 });
 
 document.getElementById('saveButton').addEventListener('click', function() {

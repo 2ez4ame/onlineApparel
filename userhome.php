@@ -3,31 +3,35 @@
 include('databaseconnection.php');
 
 // Start session
+// Start session
 session_start();
 
-// Fetch logged-in user's details if session is set
+// Check if user is logged in
 if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-    $query = "SELECT first_name FROM users WHERE user_id = ?";
-    
-    // Prepare the statement
-    if ($stmt = $conn->prepare($query)) {
+  $user_id = $_SESSION['user_id'];
+  $query = "SELECT first_name FROM users WHERE user_id = ?";
+  
+  if ($stmt = $conn->prepare($query)) {
       $stmt->bind_param("i", $user_id);
       $stmt->execute();
       $stmt->bind_result($first_name);
       $stmt->fetch();
       $stmt->close();
-    }
+  }
 } else {
-    // Fetch the first user's first name if no user is logged in
-    $query = "SELECT first_name FROM users LIMIT 1";  // Get the first account
-    if ($stmt = $conn->prepare($query)) {
-        $stmt->execute();
-        $stmt->bind_result($first_name);
-        $stmt->fetch();
-        $stmt->close();
-    }
+  $first_name = "Guest";
 }
+
+
+
+// Debugging: Check the session user_id and fetched first_name
+if (isset($_SESSION['user_id'])) {
+    error_log("Session user_id: " . $_SESSION['user_id']);
+} else {
+    error_log("Session user_id is not set");
+}
+error_log("Fetched first_name: " . $first_name);
+
 if ($_SERVER['REQUEST_URI'] == '/onlineapparel/thispagedoesnotexist') {
   // Display 404 custom error message here
   echo '<h1>404 - Page Not Found</h1>';
@@ -43,7 +47,7 @@ if ($_SERVER['REQUEST_URI'] == '/onlineapparel/thispagedoesnotexist') {
 <link rel="stylesheet" href="bootstrap.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
 
 <style>
   .container{

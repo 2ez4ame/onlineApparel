@@ -72,11 +72,11 @@
     }
 
     .color-picker {
-        display: block;
+        display: none; /* Hide by default */
     }
 
     .text-options, .background-options {
-        display: none;
+        display: none; /* Hide by default */
     }
 
     .text-options {
@@ -116,14 +116,7 @@
         <button type="button">Upload your design <span><i class='bx bx-chevron-up' style="font-size:30px;"></i></span></button>
         <button type="button">Export <span><i class='bx bx-chevron-right' style="font-size:30px;"></i></span></button>
 
-        <!-- Title Section -->
-        <input type="text" id="title" name="title" class="text-input" placeholder="Enter title here">
-
-        <!-- Size Section -->
-        <input type="text" id="size" name="size" class="text-input" placeholder="Enter size here">
-
-        <!-- Image URL Section -->
-        <input type="text" id="imageUrl" name="imageUrl" class="text-input" placeholder="Enter image URL here">
+        
 
         <!-- Garment Color Section -->
         <a href="#home" id="garmentColorToggle">Garment Color <span><i class='bx bxs-chevron-down'></i></span></a>
@@ -169,13 +162,24 @@ document.getElementById("garmentColorPicker").addEventListener("input", (e) => {
   const color = e.target.value;
   document.getElementById("colorPicker").style.backgroundColor = color;
 
+  console.log("Selected color:", color); // Debugging statement
+
   // Update color in Three.js model
   if (typeof object !== "undefined" && object) {
     object.traverse((node) => {
       if (node.isMesh && node.material) {
-        node.material.color.set(color);
+        console.log("Node material before color change:", node.material); // Debugging statement
+        if (node.material.color) {
+          node.material.color.set(color);
+          node.material.needsUpdate = true; // Ensure the material is updated
+          console.log("Node material after color change:", node.material); // Debugging statement
+        } else {
+          console.warn("Node material does not have a color property:", node.material); // Debugging statement
+        }
       }
     });
+  } else {
+    console.warn("Object is not defined"); // Debugging statement
   }
 });
 
@@ -197,6 +201,7 @@ document.getElementById("backgroundColor").addEventListener("input", (e) => {
   document.body.style.backgroundColor = color;
 });
 
+// Save button click handler to save the design
 document.getElementById('saveButton').addEventListener('click', function(event) {
     event.preventDefault(); // Prevent default form submission
 

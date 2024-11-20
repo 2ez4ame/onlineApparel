@@ -237,7 +237,7 @@ include('databaseconnection.php');
 
     // Optional: Close dropdown if clicked outside
     window.onclick = function(event) {
-      if (!event.target.matches('.admin a')) {
+      if (!event.target.matches('#firstName')) {
         const dropdown = document.getElementById("dropdown");
         if (dropdown && dropdown.style.display === "block") {
           dropdown.style.display = "none";

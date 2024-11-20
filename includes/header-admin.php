@@ -34,11 +34,10 @@ if (isset($_SESSION['user_id'])) {
 } 
 ?>
 
-
-
   <link rel="shortcut icon" href="images/logo.png" type="image/x-icon">
   <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
   <link rel="shortcut icon" href="icons/logo.png" type="image/x-icon">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   
   <style>
     /* Rest of your styles */
@@ -54,6 +53,7 @@ if (isset($_SESSION['user_id'])) {
       align-items: center;
       background-color: white;
       color: black;
+      padding:  15px 10px ;
       padding:  15px 10px ;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
@@ -275,14 +275,12 @@ if (isset($_SESSION['user_id'])) {
         <i class='bx bx-user icon ' style="font-size:35px; margin-top:7px;"></i>
       </a>
       <div class="admin">
-        <a onclick="toggleDropdown()" style="cursor: pointer;">
-          Welcome, <?php echo htmlspecialchars($first_name); ?> <i class='bx bx-chevron-down' style="font-size:25px;"></i>
-        </a>
+        <span style="font-size: 25px; font-weight: bold; color: black; margin-top:7px;">Welcome, </span>
+        <span id="firstName" style="font-size: 20px; margin-top:7px; font-weight: bold; color: #abf600; cursor: pointer;"><?php echo htmlspecialchars($first_name); ?></span> <i class='bx bx-chevron-down' style="font-size:25px;"></i>
         <div id="dropdown" class="dropdown-content" style="display: none;">
           <a href="profile.php">Profile</a>
           <a href="save_projects.php">Save Projects</a>
           <a href="javascript:void(0);" onclick="logout()">Logout</a>
-
         </div>
       </div>
 
@@ -324,10 +322,11 @@ if (isset($_SESSION['user_id'])) {
     const notificationCount = document.getElementById('notificationContent').children.length;
     document.getElementById('notificationCount').innerText = notificationCount;
 
-    function toggleDropdown() {
+    document.getElementById('firstName').onclick = function() {
       const dropdown = document.getElementById("dropdown");
       dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
-    }
+    };
+
     function logout() {
       // Show the confirmation modal
       document.getElementById('logoutModal').style.display = 'block';

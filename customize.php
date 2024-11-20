@@ -96,21 +96,28 @@ window.onload = function() {
         scene.add(object);
         camera.position.z = 5;
         animate();
+
+        // Apply saved customization to 3D model (garment color)
+        if (garmentColor && object) {
+            object.traverse((node) => {
+                if (node.isMesh && node.material) {
+                    console.log("Node material before color change:", node.material); // Debugging statement
+                    if (node.material.color) {
+                        node.material.color.set(garmentColor);
+                        node.material.needsUpdate = true; // Ensure the material is updated
+                        console.log("Node material after color change:", node.material); // Debugging statement
+                    } else {
+                        console.warn("Node material does not have a color property:", node.material); // Debugging statement
+                    }
+                }
+            });
+        }
+
+        // Apply saved text if available
+        if (textInput && textSize && fontSelect && textColor) {
+            addTextToModel(textInput, textSize, fontSelect, textColor);
+        }
     });
-
-    // Apply saved customization to 3D model (garment color)
-    if (garmentColor && object) {
-        object.traverse((node) => {
-            if (node.isMesh && node.material) {
-                node.material.color.set(garmentColor);
-            }
-        });
-    }
-
-    // Apply saved text if available
-    if (textInput && textSize && fontSelect && textColor) {
-        addTextToModel(textInput, textSize, fontSelect, textColor);
-    }
 };
 
 // Function to add text to your model
@@ -127,6 +134,7 @@ function addTextToModel(textInput, textSize, fontSelect, textColor) {
         scene.add(textMesh);
     });
 }
+
 document.getElementById("garmentColorToggle").addEventListener("click", () => {
   const colorPicker = document.getElementById("garmentColorPicker");
   colorPicker.style.display = colorPicker.style.display === "none" ? "block" : "none";
@@ -137,13 +145,24 @@ document.getElementById("garmentColorPicker").addEventListener("input", (e) => {
   const color = e.target.value;
   document.getElementById("colorPicker").style.backgroundColor = color;
 
+  console.log("Selected color:", color); // Debugging statement
+
   // Update color in Three.js model
   if (typeof object !== "undefined" && object) {
     object.traverse((node) => {
       if (node.isMesh && node.material) {
-        node.material.color.set(color);
+        console.log("Node material before color change:", node.material); // Debugging statement
+        if (node.material.color) {
+          node.material.color.set(color);
+          node.material.needsUpdate = true; // Ensure the material is updated
+          console.log("Node material after color change:", node.material); // Debugging statement
+        } else {
+          console.warn("Node material does not have a color property:", node.material); // Debugging statement
+        }
       }
     });
+  } else {
+    console.warn("Object is not defined"); // Debugging statement
   }
 });
 
@@ -164,7 +183,6 @@ document.getElementById("backgroundColor").addEventListener("input", (e) => {
   const color = e.target.value;
   document.body.style.backgroundColor = color;
 });
-
 
 // Save button click handler to save the design
 document.getElementById('saveButton').addEventListener('click', function() {
@@ -225,6 +243,76 @@ function convertModelToGLB(model) {
       reader.readAsDataURL(blob);  // Convert to base64 (or return as binary for sending to server)
   });
 }
+function incrementQuantity() {
+        var quantityInput = document.getElementById("quantity");
+        quantityInput.value = parseInt(quantityInput.value) + 1;
+    }
+
+    // Decrement the quantity
+    function decrementQuantity() {
+        var quantityInput = document.getElementById("quantity");
+        if (parseInt(quantityInput.value) > 1) {
+            quantityInput.value = parseInt(quantityInput.value) - 1;
+        }
+    }
+
+    // Close the order container
+    function closeOrderContainer() {
+        const orderContainer = document.querySelector('.order-container');
+        orderContainer.style.display = 'none';
+    }
+
+    // Toggle the order container visibility
+    function toggleOrderContainer() {
+        const orderContainer = document.querySelector('.order-container');
+        const toggleButton = document.querySelector('.order-toggle-btn');
+        if (orderContainer.style.display === 'none' || orderContainer.style.display === '') {
+            orderContainer.style.display = 'flex'; // Show the container
+            toggleButton.textContent = 'Close'; // Change the button text to 'Close'
+        } else {
+            orderContainer.style.display = 'none'; // Hide the container
+            toggleButton.textContent = 'Open'; // Change the button text to 'Open'
+        }
+    }
+
+    // Open the payment modal
+    function openPaymentModal() {
+        const paymentModal = document.getElementById('paymentModal');
+        paymentModal.style.display = 'flex';
+    }
+
+    // Close the payment modal
+    function closePaymentModal() {
+        const paymentModal = document.getElementById('paymentModal');
+        paymentModal.style.display = 'none';
+    }
+
+    // Show the PayPal button when PayPal is selected
+    document.getElementById('paypal').addEventListener('change', function() {
+        const paypalButtonContainer = document.getElementById('paypal-button-container');
+        if (this.checked) {
+            paypalButtonContainer.style.display = 'block';
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: 100.00 // Placeholder amount, adjust based on your calculation
+                            }
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        alert('Transaction completed by ' + details.payer.name.given_name);
+                    });
+                }
+            }).render('#paypal-button-container');
+        } else {
+            paypalButtonContainer.style.display = 'none';
+        }
+    });
+    
 
 // Load saved design if available from database
 <?php if (isset($design)): ?>
