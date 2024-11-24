@@ -6,14 +6,7 @@
   <title>Customization</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #D9D9D9;
-        margin: 0;
-    }
+ 
 
     .order-container {
         display: flex;
@@ -513,7 +506,7 @@
                         alert('Transaction completed by ' + details.payer.name.given_name);
                     });
                 }
-            }).render('#paypal-button-container');
+            }).render('#paypal-button-container') ;
         } else {
             paypalButtonContainer.style.display = 'none';
         }

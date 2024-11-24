@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 include 'includes/header-customer.php';
-include 'includes/sidebar-customer.php'; 
+
 
 // Check if a saved design ID is provided
 if (isset($_GET['id'])) {
@@ -32,19 +32,15 @@ if (isset($_GET['id'])) {
 
 <div id="header"><?php include 'includes/header-customer.php'; ?></div>
 <div class="content">
-    <div id="sidebar">
-        <?php 
-        if (file_exists('includes/sidebar-customer.php')) {
-            include 'includes/sidebar-customer.php'; 
-        } else {
-            echo "Sidebar file not found.";
-        }
-        ?>
-    </div>
+    <?php include 'includes/sidebar-customer.php'; ?>
     <main>
         <div id="container3D"></div>
         <div class="controls">
             <!-- Add controls here if needed -->
+            <div id="garmentColorToggle"></div>
+            <input type="color" id="garmentColorPicker" style="display:none;">
+            <div id="backgroundToggle"></div>
+            <input type="color" id="backgroundColor" style="display:none;">
         </div>
     </main>
 </div>
@@ -52,6 +48,7 @@ if (isset($_GET['id'])) {
 <script type="module" src="js/main.js"></script>
 <script src="https://www.paypal.com/sdk/js?client-id=AU5THB8u5xqTfY6An508wUQgMHD_3iX4Ggpc86E21lAYcRlU_7fA83cmpnpUVQnzwnMZZPxOUeEQqwCL&currency=PHP"></script>
 <script>
+    
 // Your existing 3D rendering logic here...
 let scene, camera, renderer, object;
 
@@ -142,28 +139,19 @@ document.getElementById("garmentColorToggle").addEventListener("click", () => {
 
 // Garment color update
 document.getElementById("garmentColorPicker").addEventListener("input", (e) => {
-  const color = e.target.value;
-  document.getElementById("colorPicker").style.backgroundColor = color;
+    const color = e.target.value;
 
-  console.log("Selected color:", color); // Debugging statement
-
-  // Update color in Three.js model
-  if (typeof object !== "undefined" && object) {
-    object.traverse((node) => {
-      if (node.isMesh && node.material) {
-        console.log("Node material before color change:", node.material); // Debugging statement
-        if (node.material.color) {
-          node.material.color.set(color);
-          node.material.needsUpdate = true; // Ensure the material is updated
-          console.log("Node material after color change:", node.material); // Debugging statement
-        } else {
-          console.warn("Node material does not have a color property:", node.material); // Debugging statement
-        }
-      }
-    });
-  } else {
-    console.warn("Object is not defined"); // Debugging statement
-  }
+    if (object) {
+        object.traverse((node) => {
+            if (node.isMesh && node.material && node.material.color) {
+                console.log("Applying color to node:", node.name); // Debugging
+                node.material.color.set(color);
+                node.material.needsUpdate = true; // Ensure the material updates
+            }
+        });
+    } else {
+        console.error("3D object is not loaded yet.");
+    }
 });
 
 // Text options display
@@ -322,4 +310,97 @@ function incrementQuantity() {
     document.getElementById('textSize').value = "<?php echo $design['textSize']; ?>";
     document.getElementById('textColorPicker').value = "<?php echo $design['textColor']; ?>";
 <?php endif; ?>
+
+    // Function to show the order container
+    function showOrderContainer() {
+        const orderContainer = document.getElementById('orderContainer');
+        orderContainer.style.display = 'flex';
+    }
+
+    
+    function loadOrderForm() {
+            let existingOrderForm = document.getElementById('order-form-container');
+            
+            if (existingOrderForm) {
+                if (existingOrderForm.style.display === 'none' || existingOrderForm.style.display === '') {
+                    existingOrderForm.style.display = 'block';
+                } else {
+                    existingOrderForm.style.display = 'none';
+                }
+                existingOrderForm.scrollIntoView();
+                return;
+            }
+
+            console.log('Fetching order form...');
+            fetch('order.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    console.log('Order form fetched successfully');
+                    orderFormContainer.innerHTML = data; 
+                    document.body.appendChild(orderFormContainer); 
+                    orderFormContainer.scrollIntoView(); 
+                })
+                .catch(error => console.error('Error loading order form:', error));
+        
+            const orderFormContainer = document.createElement('div'); 
+            orderFormContainer.id = 'order-form-container'; 
+            orderFormContainer.style.marginTop = '80px';
+            orderFormContainer.style.padding = '20px'; 
+            orderFormContainer.style.backgroundColor = '#fff'; // Ensure background color is set
+            orderFormContainer.style.boxShadow = '0px 4px 8px rgba(0, 0, 0, 0.2)'; // Add box shadow for better visibility
+            
+            
+        }
+        const price = 200; // Fixed price
+            function incrementQuantity() {
+            const quantityInput = document.getElementById("quantity");
+            let currentValue = parseInt(quantityInput.value, 10);
+            if (!isNaN(currentValue)) {
+                quantityInput.value = currentValue + 1;
+                updateTotal();
+            }
+        }
+
+        // Function to decrement quantity
+        function decrementQuantity() {
+            const quantityInput = document.getElementById("quantity");
+            let currentValue = parseInt(quantityInput.value, 10);
+            if (!isNaN(currentValue) && currentValue > 1) {
+                quantityInput.value = currentValue - 1;
+                updateTotal();
+            }
+        }
+
+        // Function to update the total amount
+        function updateTotal() {
+            const quantityInput = document.getElementById("quantity");
+            const totalAmountInput = document.getElementById("totalAmount");
+            let quantity = parseInt(quantityInput.value, 10);
+
+            if (!isNaN(quantity) && quantity >= 1) {
+                totalAmountInput.value = quantity * price;
+            } else {
+                totalAmountInput.value = 0;
+            }
+        }
+
+        // Initialize the total amount on page load
+        document.addEventListener("DOMContentLoaded", updateTotal);
+
+
+        function openPaymentModal() {
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+
+        // Close the modal
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+        // Function to increment quantity
+
 </script>

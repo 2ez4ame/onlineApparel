@@ -131,6 +131,7 @@ document.getElementById("garmentColorPicker").addEventListener("input", (e) => {
         console.log("Node material before color change:", node.material); // Debugging statement
         if (node.material.color) {
           node.material.color.set(color);
+          node.material.needsUpdate = true; // Ensure the material is updated
           console.log("Node material after color change:", node.material); // Debugging statement
         } else {
           console.warn("Node material does not have a color property:", node.material); // Debugging statement

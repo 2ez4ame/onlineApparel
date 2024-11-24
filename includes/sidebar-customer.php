@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>3D T-Shirt Editor</title>
 <style>
-    /* Existing Styles */
+   
     .sidebar {
         width: 250px;
         height: 700px;
@@ -120,8 +120,8 @@
 
         <!-- Garment Color Section -->
         <a href="#home" id="garmentColorToggle">Garment Color <span><i class='bx bxs-chevron-down'></i></span></a>
-        <div id="colorPicker" class="color-picker-circle"></div>
-        <input type="color" id="garmentColorPicker" name="garmentColor" class="color-picker" value="#ffffff">
+        <div id="colorPicker" class="form-control form-control-color"></div>
+        <input type="color" id="garmentColorPicker" name="garmentColor" class="form-control form-control-color" value="#563d7c">
 
         <!-- Text Section -->
         <a href="#services" id="textToggle">Text <span><i class='bx bxs-chevron-down'></i></span></a>
@@ -141,7 +141,7 @@
         <!-- Background Section -->
         <a href="#about" id="backgroundToggle">Background <span><i class='bx bxs-chevron-down'></i></span></a>
         <div class="background-options" id="backgroundOptions">
-            <input type="color" id="backgroundColor" name="backgroundColor" class="text-input" value="#ffffff">
+            <input  type="color" id="backgroundColor" name="backgroundColor" class="form-control form-control-color mt-5" value="#563d7c">
         </div>
 
         <!-- Save Section -->

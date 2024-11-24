@@ -1,5 +1,4 @@
-
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" href="icons/logo.png" type="image/x-icon">
   <title>Customization</title>
@@ -218,16 +217,42 @@
         }
 
         function loadOrderForm() {
-        let existingOrderForm = document.getElementById('order-form-container');
-        
-        if (existingOrderForm) {
-            if (existingOrderForm.style.display === 'none' || existingOrderForm.style.display === '') {
-                existingOrderForm.style.display = 'block';
-            } else {
-                existingOrderForm.style.display = 'none';
+            let existingOrderForm = document.getElementById('order-form-container');
+            
+            if (existingOrderForm) {
+                if (existingOrderForm.style.display === 'none' || existingOrderForm.style.display === '') {
+                    existingOrderForm.style.display = 'block';
+                } else {
+                    existingOrderForm.style.display = 'none';
+                }
+                existingOrderForm.scrollIntoView();
+                return;
             }
-            existingOrderForm.scrollIntoView();
-            return;
+
+            console.log('Creating order form container...');
+            const orderFormContainer = document.createElement('div'); 
+            orderFormContainer.id = 'order-form-container'; 
+            orderFormContainer.style.marginTop = '80px';
+            orderFormContainer.style.padding = '20px'; 
+            orderFormContainer.style.backgroundColor = '#fff'; // Ensure background color is set
+            orderFormContainer.style.boxShadow = '0px 4px 8px rgba(0, 0, 0, 0.2)'; // Add box shadow for better visibility
+            document.body.appendChild(orderFormContainer);
+            console.log('Order form container created and appended to body.');
+
+            console.log('Fetching order form...');
+            fetch('order.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    console.log('Order form fetched successfully');
+                    orderFormContainer.innerHTML = data; 
+                    orderFormContainer.scrollIntoView(); 
+                })
+                .catch(error => console.error('Error loading order form:', error));
         }
 
         const orderFormContainer = document.createElement('div'); 
@@ -237,15 +262,7 @@
         orderFormContainer.style.backgroundColor = '#fff'; // Ensure background color is set
         orderFormContainer.style.boxShadow = '0px 4px 8px rgba(0, 0, 0, 0.2)'; // Add box shadow for better visibility
         
-        fetch('includes/order-page.php') // Use Fetch API to get the order form
-            .then(response => response.text())
-            .then(data => {
-                orderFormContainer.innerHTML = data; 
-                document.body.appendChild(orderFormContainer); 
-                orderFormContainer.scrollIntoView(); 
-            })
-            .catch(error => console.error('Error loading order form:', error));
-    }
+        
     
     function openPaymentModal() {
             document.getElementById('paymentModal').style.display = 'flex';
@@ -291,5 +308,50 @@
                 }).render('#paypal-button-container');
             }
         }
+
+        function incrementQuantity() {
+    const quantityInput = document.getElementById("quantity");
+    let currentValue = parseInt(quantityInput.value, 10);
+    if (!isNaN(currentValue)) {
+        quantityInput.value = currentValue + 1;
+        updateTotal();
+    }
+}
+
+// Function to decrement quantity
+function decrementQuantity() {
+    const quantityInput = document.getElementById("quantity");
+    let currentValue = parseInt(quantityInput.value, 10);
+    if (!isNaN(currentValue) && currentValue > 1) {
+        quantityInput.value = currentValue - 1;
+        updateTotal();
+    }
+}
+
+// Function to update the total amount
+function updateTotal() {
+    const quantityInput = document.getElementById("quantity");
+    const totalAmountInput = document.getElementById("totalAmount");
+    let quantity = parseInt(quantityInput.value, 10);
+
+    if (!isNaN(quantity) && quantity >= 1) {
+        totalAmountInput.value = quantity * price;
+    } else {
+        totalAmountInput.value = 0;
+    }
+}
+
+// Initialize the total amount on page load
+document.addEventListener("DOMContentLoaded", updateTotal);
+
+
+function openPaymentModal() {
+    document.getElementById('paymentModal').style.display = 'flex';
+}
+
+// Close the modal
+function closePaymentModal() {
+    document.getElementById('paymentModal').style.display = 'none';
+}
 
 </script>
