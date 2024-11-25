@@ -5,7 +5,6 @@ ini_set('display_errors', 1);
 
 include 'includes/header-customer.php';
 
-
 // Check if a saved design ID is provided
 if (isset($_GET['id'])) {
     $designId = intval($_GET['id']);
@@ -46,10 +45,8 @@ if (isset($_GET['id'])) {
 </div>
 
 <script type="module" src="js/main.js"></script>
-<script src="https://www.paypal.com/sdk/js?client-id=AU5THB8u5xqTfY6An508wUQgMHD_3iX4Ggpc86E21lAYcRlU_7fA83cmpnpUVQnzwnMZZPxOUeEQqwCL&currency=PHP"></script>
+
 <script>
-    
-// Your existing 3D rendering logic here...
 let scene, camera, renderer, object;
 
 // Initialize 3D scene
@@ -88,7 +85,7 @@ window.onload = function() {
 
     // Load the saved 3D model
     const loader = new THREE.GLTFLoader();
-    loader.load('<?php echo $design['model_file_path']; ?>', function(gltf) {
+    loader.load('<?php echo isset($design['model_file_path']) ? $design['model_file_path'] : ''; ?>', function(gltf) {
         object = gltf.scene;
         scene.add(object);
         camera.position.z = 5;
@@ -208,199 +205,10 @@ document.getElementById('saveButton').addEventListener('click', function() {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.message) {
-            alert(data.message); // Success message
-        } else {
-            alert(data.error); // Error message from server
-        }
+        console.log('Design saved successfully:', data);
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.error('Error saving design:', error);
     });
 });
-
-function convertModelToGLB(model) {
-  // Your code to convert Three.js model object to GLB format, e.g., using GLTFExporter
-  const exporter = new THREE.GLTFExporter();
-  exporter.parse(model, function(result) {
-      const blob = new Blob([result], { type: 'application/octet-stream' });
-      const reader = new FileReader();
-      reader.onload = function(event) {
-          return event.target.result;  // This will give the base64 string of the GLB file
-      };
-      reader.readAsDataURL(blob);  // Convert to base64 (or return as binary for sending to server)
-  });
-}
-function incrementQuantity() {
-        var quantityInput = document.getElementById("quantity");
-        quantityInput.value = parseInt(quantityInput.value) + 1;
-    }
-
-    // Decrement the quantity
-    function decrementQuantity() {
-        var quantityInput = document.getElementById("quantity");
-        if (parseInt(quantityInput.value) > 1) {
-            quantityInput.value = parseInt(quantityInput.value) - 1;
-        }
-    }
-
-    // Close the order container
-    function closeOrderContainer() {
-        const orderContainer = document.querySelector('.order-container');
-        orderContainer.style.display = 'none';
-    }
-
-    // Toggle the order container visibility
-    function toggleOrderContainer() {
-        const orderContainer = document.querySelector('.order-container');
-        const toggleButton = document.querySelector('.order-toggle-btn');
-        if (orderContainer.style.display === 'none' || orderContainer.style.display === '') {
-            orderContainer.style.display = 'flex'; // Show the container
-            toggleButton.textContent = 'Close'; // Change the button text to 'Close'
-        } else {
-            orderContainer.style.display = 'none'; // Hide the container
-            toggleButton.textContent = 'Open'; // Change the button text to 'Open'
-        }
-    }
-
-    // Open the payment modal
-    function openPaymentModal() {
-        const paymentModal = document.getElementById('paymentModal');
-        paymentModal.style.display = 'flex';
-    }
-
-    // Close the payment modal
-    function closePaymentModal() {
-        const paymentModal = document.getElementById('paymentModal');
-        paymentModal.style.display = 'none';
-    }
-
-    // Show the PayPal button when PayPal is selected
-    document.getElementById('paypal').addEventListener('change', function() {
-        const paypalButtonContainer = document.getElementById('paypal-button-container');
-        if (this.checked) {
-            paypalButtonContainer.style.display = 'block';
-            paypal.Buttons({
-                createOrder: function(data, actions) {
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: {
-                                value: 100.00 // Placeholder amount, adjust based on your calculation
-                            }
-                        }]
-                    });
-                },
-                onApprove: function(data, actions) {
-                    return actions.order.capture().then(function(details) {
-                        alert('Transaction completed by ' + details.payer.name.given_name);
-                    });
-                }
-            }).render('#paypal-button-container');
-        } else {
-            paypalButtonContainer.style.display = 'none';
-        }
-    });
-    
-
-// Load saved design if available from database
-<?php if (isset($design)): ?>
-    document.getElementById('garmentColorPicker').value = "<?php echo $design['garmentColor']; ?>";
-    document.getElementById('textInput').value = "<?php echo $design['textInput']; ?>";
-    document.getElementById('fontSelect').value = "<?php echo $design['fontSelect']; ?>";
-    document.getElementById('textSize').value = "<?php echo $design['textSize']; ?>";
-    document.getElementById('textColorPicker').value = "<?php echo $design['textColor']; ?>";
-<?php endif; ?>
-
-    // Function to show the order container
-    function showOrderContainer() {
-        const orderContainer = document.getElementById('orderContainer');
-        orderContainer.style.display = 'flex';
-    }
-
-    
-    function loadOrderForm() {
-            let existingOrderForm = document.getElementById('order-form-container');
-            
-            if (existingOrderForm) {
-                if (existingOrderForm.style.display === 'none' || existingOrderForm.style.display === '') {
-                    existingOrderForm.style.display = 'block';
-                } else {
-                    existingOrderForm.style.display = 'none';
-                }
-                existingOrderForm.scrollIntoView();
-                return;
-            }
-
-            console.log('Fetching order form...');
-            fetch('order.php')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    console.log('Order form fetched successfully');
-                    orderFormContainer.innerHTML = data; 
-                    document.body.appendChild(orderFormContainer); 
-                    orderFormContainer.scrollIntoView(); 
-                })
-                .catch(error => console.error('Error loading order form:', error));
-        
-            const orderFormContainer = document.createElement('div'); 
-            orderFormContainer.id = 'order-form-container'; 
-            orderFormContainer.style.marginTop = '80px';
-            orderFormContainer.style.padding = '20px'; 
-            orderFormContainer.style.backgroundColor = '#fff'; // Ensure background color is set
-            orderFormContainer.style.boxShadow = '0px 4px 8px rgba(0, 0, 0, 0.2)'; // Add box shadow for better visibility
-            
-            
-        }
-        const price = 200; // Fixed price
-            function incrementQuantity() {
-            const quantityInput = document.getElementById("quantity");
-            let currentValue = parseInt(quantityInput.value, 10);
-            if (!isNaN(currentValue)) {
-                quantityInput.value = currentValue + 1;
-                updateTotal();
-            }
-        }
-
-        // Function to decrement quantity
-        function decrementQuantity() {
-            const quantityInput = document.getElementById("quantity");
-            let currentValue = parseInt(quantityInput.value, 10);
-            if (!isNaN(currentValue) && currentValue > 1) {
-                quantityInput.value = currentValue - 1;
-                updateTotal();
-            }
-        }
-
-        // Function to update the total amount
-        function updateTotal() {
-            const quantityInput = document.getElementById("quantity");
-            const totalAmountInput = document.getElementById("totalAmount");
-            let quantity = parseInt(quantityInput.value, 10);
-
-            if (!isNaN(quantity) && quantity >= 1) {
-                totalAmountInput.value = quantity * price;
-            } else {
-                totalAmountInput.value = 0;
-            }
-        }
-
-        // Initialize the total amount on page load
-        document.addEventListener("DOMContentLoaded", updateTotal);
-
-
-        function openPaymentModal() {
-            document.getElementById('paymentModal').style.display = 'flex';
-        }
-
-        // Close the modal
-        function closePaymentModal() {
-            document.getElementById('paymentModal').style.display = 'none';
-        }
-        // Function to increment quantity
-
 </script>

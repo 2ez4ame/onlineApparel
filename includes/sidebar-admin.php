@@ -1,7 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
@@ -102,7 +99,7 @@
       <i class='bx bx-bar-chart-alt-2'></i>
       <span>Reports</span>
       </button>
-    <button onclick="loadContent('customize.php')"class="sidebar-button">
+    <button onclick="window.location.href='customize.php'" class="sidebar-button">
       <i class='bx bx-palette'></i>
       <span>Create Design</span>
     </button>
@@ -114,21 +111,26 @@
   </div>
 
   <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('expanded');
-    }
-
     function loadContent(url) {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
-          document.getElementById('content').innerHTML = xhr.responseText;
+          const contentDiv = window.parent.document.getElementById('content');
+          contentDiv.innerHTML = xhr.responseText;
           reinitializeScripts();
         }
       };
       xhr.send();
+    }
+
+    function reinitializeScripts() {
+      const scripts = window.parent.document.getElementById('content').getElementsByTagName('script');
+      for (let i = 0; i < scripts.length; i++) {
+        const script = document.createElement('script');
+        script.text = scripts[i].innerText;
+        window.parent.document.body.appendChild(script).parentNode.removeChild(script);
+      }
     }
 
     function expandSidebar() {

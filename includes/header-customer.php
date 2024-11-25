@@ -193,6 +193,7 @@
 
     
   <script>
+      const price = 200; // Fixed price
         window.onload = function() {
         const savedDesignName = localStorage.getItem("designName") || "Untitled Design";
         document.getElementById("designName").value = savedDesignName;
@@ -309,37 +310,32 @@
             }
         }
 
-        function incrementQuantity() {
-    const quantityInput = document.getElementById("quantity");
-    let currentValue = parseInt(quantityInput.value, 10);
-    if (!isNaN(currentValue)) {
-        quantityInput.value = currentValue + 1;
-        updateTotal();
-    }
-}
+      
 
-// Function to decrement quantity
-function decrementQuantity() {
-    const quantityInput = document.getElementById("quantity");
-    let currentValue = parseInt(quantityInput.value, 10);
-    if (!isNaN(currentValue) && currentValue > 1) {
-        quantityInput.value = currentValue - 1;
-        updateTotal();
-    }
-}
+    document.addEventListener("DOMContentLoaded", () => {
+        updateTotal();  // Initialize the total when the page loads
+    });
 
-// Function to update the total amount
-function updateTotal() {
-    const quantityInput = document.getElementById("quantity");
-    const totalAmountInput = document.getElementById("totalAmount");
-    let quantity = parseInt(quantityInput.value, 10);
-
-    if (!isNaN(quantity) && quantity >= 1) {
-        totalAmountInput.value = quantity * price;
-    } else {
-        totalAmountInput.value = 0;
+    function updateTotal() {
+        const quantity = parseInt(document.getElementById("quantity").value) || 0;
+        const total = quantity * price;  // Calculate total using fixed price
+        document.getElementById("total").value = total.toFixed(2);  // Update total in the input field
     }
-}
+
+    function incrementQuantity() {
+        const quantityInput = document.getElementById("quantity");
+        quantityInput.value = parseInt(quantityInput.value, 10) + 1;
+        updateTotal();  // Ensure total is updated after increment
+    }
+
+    function decrementQuantity() {
+        const quantityInput = document.getElementById("quantity");
+        const currentQuantity = parseInt(quantityInput.value, 10);
+        if (currentQuantity > 1) {
+            quantityInput.value = currentQuantity - 1;
+            updateTotal();  // Ensure total is updated after decrement
+        }
+    }
 
 // Initialize the total amount on page load
 document.addEventListener("DOMContentLoaded", updateTotal);

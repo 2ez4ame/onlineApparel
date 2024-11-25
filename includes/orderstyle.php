@@ -6,10 +6,10 @@
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     padding: 20px;
-    max-width: 1400px; /* Maximum width for larger screens */
+    max-width: 950px; /* Maximum width for larger screens */
     height: 600px;
     width: 2200px;
-    margin-top: 200px;
+    margin-top: 50px;
     margin-left: 400px;
     position: relative;
 }

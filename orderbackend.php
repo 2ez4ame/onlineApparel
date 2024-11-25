@@ -2,21 +2,34 @@
 include('databaseconnection.php'); // Ensure this file correctly connects to the database
 session_start();
 
+// Check if the order is placed
 if (isset($_POST['order'])) {
-    $amount = floatval($_POST['totalAmount']);
-    $quantity = intval($_POST['quantity']);
+    $bust = isset($_POST['bust']) ? floatval($_POST['bust']) : 0;
+    $waist = isset($_POST['waist']) ? floatval($_POST['waist']) : 0;
+    $shoulder = isset($_POST['shoulder']) ? floatval($_POST['shoulder']) : 0;
+    $fabric = isset($_POST['fabric']) ? $_POST['fabric'] : ''; // Fabric is now treated as a string
+    $amount = isset($_POST['totalAmount']) ? floatval($_POST['totalAmount']) : 0;
+    $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 0;
 
-    // Debugging statements
-    error_log("Received order request with amount: $amount and quantity: $quantity");
+    if ($amount <= 0 || $quantity <= 0) {
+        echo '<script>
+                alert("Invalid amount or quantity.");
+                window.location.href = "order.php";     
+              </script>';
+        exit();
+    }
 
-    // Insert the order details into the database
-    $stmt = $conn->prepare("INSERT INTO `orderx` (amount, quantity) VALUES (?, ?)");
+    // Debugging statement
+    error_log("Received order request with amount: $amount, quantity: $quantity, bust: $bust, waist: $waist, shoulder: $shoulder, fabric: $fabric");
+
+    // Prepare the SQL statement to insert the order into the database
+    $stmt = $conn->prepare("INSERT INTO `orderx` (amount, quantity, bust, waist, shoulder, fabric, status) VALUES (?, ?, ?, ?, ?, ?, 'pending')");
     if ($stmt === false) {
         die("Error in SQL preparation: " . $conn->error);
     }
 
-    // Correct parameter types: d (double) for amount, i (integer) for quantity
-    $stmt->bind_param("di", $amount, $quantity);
+    // Bind the parameters to prevent SQL injection
+    $stmt->bind_param("iidsss", $amount, $quantity, $bust, $waist, $shoulder, $fabric);
 
     if ($stmt->execute()) {
         // Generate the PayMongo payment link after the order is placed
@@ -52,6 +65,7 @@ if (isset($_POST['order'])) {
         // Execute cURL request and get the response
         $response = curl_exec($ch);
         if ($response === false) {
+            error_log('cURL Error: ' . curl_error($ch));
             die('Error: "' . curl_error($ch) . '" - Code: ' . curl_errno($ch));
         }
         curl_close($ch);
@@ -59,35 +73,47 @@ if (isset($_POST['order'])) {
         // Decode the JSON response from PayMongo
         $responseData = json_decode($response, true);
 
+        // Debugging statement to log the response
+        error_log("PayMongo response: " . print_r($responseData, true));
+
+        // Check if PayMongo returned a valid checkout URL
         if (isset($responseData['data']['attributes']['checkout_url'])) {
-            // Open the PayMongo checkout URL in a new tab using JavaScript
             $checkoutUrl = $responseData['data']['attributes']['checkout_url'];
             echo '<script>
-                    window.location.href = "order.php";
-                    window.open("' . $checkoutUrl . '", "_blank");  // Open the URL in a new tab
+                    // Open the PayMongo checkout URL in a new tab
+                    window.open("' . $checkoutUrl . '", "_blank");
+                    
+                    // Use setTimeout to delay the redirection to "customize.php" after 1 second
+                    setTimeout(function() {
+                        window.location.href = "customize.php";  // Redirect to customize.php
+                    }, 1000); // 1000ms delay to ensure the new tab opens first
                   </script>';
         } else {
             // If PayMongo did not return a checkout URL, display an error
+            error_log("PayMongo API failed: " . print_r($responseData, true));
             echo '<script>
                     alert("Error: Could not generate payment link. Please try again.");
-                    window.location.href = "order.php";  
+                    window.location.href = "customize.php";  
                   </script>';
         }
-
     } else {
+        // If database insertion fails, show an error
         echo '<script>
                 alert("Error: Could not place order. Please try again.");
-                window.location.href = "order.php";     
+                window.location.href = "customize.php";     
               </script>';
     }
 
+    // Close the statement
     $stmt->close();
 } else {
+    // If the order is not placed, show an invalid request alert
     echo '<script>
             alert("Invalid request.");
-            window.location.href = "order.php";  // Redirect to order page for invalid request
+            window.location.href = "customize.php";  // Redirect to order page for invalid request
           </script>';
 }
 
+// Close the database connection
 $conn->close();
 ?>
