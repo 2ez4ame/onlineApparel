@@ -76,7 +76,7 @@
         width: 700px;
     }
     .carousel-item6 img {
-        height: 295px;
+        height: 395px;
         object-fit: cover;
         border: 2px solid #28a745;
         border-radius: 15px;
@@ -95,7 +95,7 @@
         object-fit: cover;
         border: 2px solid #28a745;
         border-radius: 15px;
-        height:250px;
+        height:350px;
     }
     /* Unique classes for each grid box */
     .grid-box-7 {
@@ -103,7 +103,7 @@
         border: 5px solid #ddd;
         border-radius: 10px;
         background-color: #f9f9f9;
-        height: 250px;
+        height: 350px;
         margin-left: -120px;
     }
     .carousel-item8 img {
@@ -111,13 +111,13 @@
         object-fit: cover;
         
         border-radius: 15px;
-        height:135px;
+        height:230px;
     }
     /* Unique classes for each grid box */
     .grid-box-8 {
     border: 2px solid #28a745; /* Green border */
     width: 730px; /* Same width as the image */
-    height: 140px; /* Same height as the image */
+    height: 240px; /* Same height as the image */
     border-radius: 15px; /* Rounded corners */
     background-color: #f9f9f9; /* Light background */
     margin-top: 270px;
@@ -216,13 +216,13 @@
             <div id="carousel1" class="carousel slide" data-bs-ride="carousel" data-bs-interval="1000">
                 <div class="carousel-inner">
                     <div class="carousel-item active carousel-item1">
-                        <img src="pimages/1.jpg" class="d-block w-100" alt="Image 1a">
+                        <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 1a">
                     </div>
                     <div class="carousel-item carousel-item1">
-                        <img src="pimages/2.jpg" class="d-block w-100" alt="Image 1b">
+                        <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 1b">
                     </div>
                     <div class="carousel-item carousel-item1">
-                        <img src="pimages/3.jpg" class="d-block w-100" alt="Image 1c">
+                        <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 1c">
                     </div>
                 </div>
             </div>
@@ -236,13 +236,13 @@
         <div id="carousel2" class="carousel slide" data-bs-ride="carousel" data-bs-interval="1400">
             <div class="carousel-inner">
                 <div class="carousel-item active carousel-item2">
-                    <img src="pimages/jersey1.jpg" class="d-block w-100" alt="Image 2a">
+                    <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 2a">
                 </div>
                 <div class="carousel-item carousel-item2">
-                    <img src="pimages/jersey2.jpg" class="d-block w-100" alt="Image 2b">
+                    <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 2b">
                 </div>
                 <div class="carousel-item carousel-item2">
-                    <img src="pimages/jersey3.jpg" class="d-block w-100" alt="Image 2c">
+                    <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 2c">
                 </div>
             </div>
         </div>
@@ -255,7 +255,7 @@
     <div class="text-center my-4">
         <div class="create-box">
             <h2>Create your own design and Order now!</h2>
-            <a href="login.php" class="btn btn-success btn-lg">Create</a>
+            <a href="login2.php" class="btn btn-success btn-lg">Create</a>
         </div>
     </div>
 </div>
@@ -265,13 +265,13 @@
         <div id="carousel3" class="carousel slide" data-bs-ride="carousel" data-bs-interval="1100">
             <div class="carousel-inner">
                 <div class="carousel-item active carousel-item2">
-                    <img src="pimages/polo4.jpg" class="d-block w-100" alt="Image 2a">
+                    <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 2a">
                 </div>
                 <div class="carousel-item carousel-item2">
-                    <img src="pimages/polo5.jpg" class="d-block w-100" alt="Image 2b">
+                    <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 2b">
                 </div>
                 <div class="carousel-item carousel-item2">
-                    <img src="pimages/polo6.jpg" class="d-block w-100" alt="Image 2c">
+                    <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 2c">
                 </div>
             </div>
         </div>
@@ -284,13 +284,31 @@
         <div id="carousel5" class="carousel slide" data-bs-ride="carousel" data-bs-interval="1200">
             <div class="carousel-inner">
                 <div class="carousel-item active carousel-item5">
-                    <img src="pimages/tote1.jpg" class="d-block w-100" alt="Image 2a">
+                    <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 2a">
                 </div>
                 <div class="carousel-item carousel-item5">
-                    <img src="pimages/tote2.jpg" class="d-block w-100" alt="Image 2b">
+                    <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 2b">
                 </div>
                 <div class="carousel-item carousel-item5">
-                    <img src="pimages/tote3.jpg" class="d-block w-100" alt="Image 2c">
+                    <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 2c">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-9">
+    <!-- Second Box with Carousel -->
+    <div class="col-md-4 grid-box grid-box-5">
+        <div id="carousel5" class="carousel slide" data-bs-ride="carousel" data-bs-interval="1200">
+            <div class="carousel-inner">
+                <div class="carousel-item active carousel-item5">
+                    <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 2a">
+                </div>
+                <div class="carousel-item carousel-item5">
+                    <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 2b">
+                </div>
+                <div class="carousel-item carousel-item5">
+                    <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 2c">
                 </div>
             </div>
         </div>
@@ -302,13 +320,13 @@
         <div id="carousel5" class="carousel slide" data-bs-ride="carousel" data-bs-interval="1300">
             <div class="carousel-inner">
                 <div class="carousel-item active carousel-item6">
-                    <img src="pimages/tshirt1.jpg" class="d-block w-100" alt="Image 2a">
+                    <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 2a">
                 </div>
                 <div class="carousel-item carousel-item6">
-                    <img src="pimages/tshirt2.jpg" class="d-block w-100" alt="Image 2b">
+                    <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 2b">
                 </div>
                 <div class="carousel-item carousel-item6">
-                    <img src="pimages/tshirt3.jpg" class="d-block w-100" alt="Image 2c">
+                    <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 2c">
                 </div>
             </div>
         </div>
@@ -320,14 +338,14 @@
         <div class="col-md-4 grid-box grid-box-7">
             <div id="carousel1" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                <div class="carousel-item active carousel-item7">
-                        <img src="pimages/cap1.jpg" class="d-block w-100" alt="Image 1a">
+                    <div class="carousel-item active carousel-item7">
+                        <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 1a">
                     </div>
                     <div class="carousel-item carousel-item7">
-                        <img src="pimages/cap2.jpg" class="d-block w-100" alt="Image 1b">
+                        <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 1b">
                     </div>
                     <div class="carousel-item carousel-item7">
-                        <img src="pimages/cap3.jpg" class="d-block w-100" alt="Image 1c">
+                        <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 1c">
                     </div>
                 </div>
             </div>
@@ -341,19 +359,16 @@
             <div id="carousel8" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active carousel-item8">
-                        <img src="pimages/shirty1.jpg" class="d-block w-100" alt="Image 1a">
+                        <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 1a">
                     </div>
                     <div class="carousel-item carousel-item8">
-                        <img src="pimages/shirty2.jpg" class="d-block w-100" alt="Image 1b">
+                        <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 1b">
                     </div>
                     <div class="carousel-item carousel-item8">
-                        <img src="pimages/shirty3.jpg" class="d-block w-100" alt="Image 1c">
+                        <img src="pimages/gray.jpg" class="d-block w-100" alt="Image 1c">
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-

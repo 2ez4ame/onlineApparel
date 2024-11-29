@@ -60,14 +60,19 @@ $statuses = [
 
 <style>
     .order-container {
-        width: 1000px;
-        max-width: 1000px;
+        width: 800px;
+        max-width: 800px;
         background-color: #fff;
         border-radius: 10px;
+        height: 600px;
         padding: 30px;
         display: flex;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         border: 1px solid #ccc;
+        margin-top: -190px;
+        margin-left: -100px;
+        
+        
     }
     .image-container {
         width: 50%;
@@ -81,6 +86,7 @@ $statuses = [
         max-width: 450px;
         border-radius: 8px;
         border: 1px solid #ccc;
+        
     }
     .separator {
         width: 2px;
@@ -146,7 +152,7 @@ $statuses = [
         z-index: 0;
     }
     .button-container {
-        margin-top: 30px;
+        margin-top: 40px;
         display: flex;
         justify-content: flex-start;
     }

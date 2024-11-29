@@ -222,7 +222,7 @@ if ($confirmedOrdersResult->num_rows > 0) {
           <p><strong>Delivery Status:</strong><span id="orderDeliveryStatus"></span></p>
           <div class="order-actions dropdown">
             <div class="d-flex justify-content-center my-3">
-              <button class="btn btn-success dropdown-toggle w-99" style="font-weight:bold" type="button" id="orderStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              <button class="btn btn-success dropdown-toggle w-99 ml-3" style="font-weight:bold" type="button" id="orderStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                 Update Delivery Status
               </button>
               <ul class="dropdown-menu" aria-labelledby="orderStatusDropdown">

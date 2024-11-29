@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_URI'] == '/onlineapparel/thispagedoesnotexist') {
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <a href="login2.php" class="btn btn-primary" id="confirmLogout">Logout</a>
+        <a href="login3.php" class="btn btn-primary" id="confirmLogout">Logout</a>
       </div>
     </div>
   </div>
