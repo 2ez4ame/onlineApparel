@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 20, 2024 at 05:28 AM
+-- Generation Time: Nov 29, 2024 at 03:39 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -48,6 +48,55 @@ CREATE TABLE `orders` (
   `user_id` int(11) DEFAULT NULL,
   `order_date` datetime DEFAULT NULL,
   `status` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orderx`
+--
+
+CREATE TABLE `orderx` (
+  `id` int(4) UNSIGNED NOT NULL,
+  `product` varchar(255) NOT NULL,
+  `bust` int(11) NOT NULL,
+  `waist` int(11) NOT NULL,
+  `shoulder` int(11) NOT NULL,
+  `fabric` varchar(255) CHARACTER SET armscii8 COLLATE armscii8_general_ci NOT NULL,
+  `amount` int(255) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `total` int(11) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `delivery_status` varchar(255) NOT NULL,
+  `reference_number` int(11) NOT NULL,
+  `order_date` datetime DEFAULT current_timestamp(),
+  `delivery_date` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orderx`
+--
+
+INSERT INTO `orderx` (`id`, `product`, `bust`, `waist`, `shoulder`, `fabric`, `amount`, `quantity`, `total`, `status`, `delivery_status`, `reference_number`, `order_date`, `delivery_date`) VALUES
+(1, 'Tshirt', 12, 12, 23, 'Polyester', 1400, 7, 9800, 'Confirmed', 'Shipped', 0, '2024-11-28 11:43:26', '2024-12-01 11:43:26'),
+(10, 'T-Shirt', 23, 12, 23, 'Polyester', 1000, 5, 5000, 'Confirmed', 'Cancelled', 0, '2024-11-28 15:30:35', '2024-12-01 15:30:35'),
+(11, 'Tshirt', 12, 12, 32, 'Cotton', 200, 1, 0, 'Confirmed', 'Shipped', 0, '2024-11-29 01:18:03', NULL),
+(12, 'Tshirt', 21, 21, 23, 'Cotton', 400, 2, 0, 'Confirmed', 'Delivered', 0, '2024-11-29 01:33:18', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orderz`
+--
+
+CREATE TABLE `orderz` (
+  `orderID` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `bust` int(11) NOT NULL,
+  `waist` int(11) NOT NULL,
+  `shoulder` int(11) NOT NULL,
+  `fabric` varchar(50) NOT NULL,
+  `amount` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -167,7 +216,11 @@ INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `password`, 
 (11, 'akosiroel', NULL, 'akosiroel@gmail.com', '$2y$10$Tg9JdoVE/H1V8kuFgdUOu.1BYMKgJeClP8Pm2B1aAXn4XS1xbQAnm', NULL, NULL, 'user'),
 (12, 'Admin', NULL, 'admin@gmail.com', '$2y$10$eQMeR0ocvq58J9rrtyixlOGVnbDbmAdsIoEqxavs1eHSay6cM8oA.', NULL, NULL, 'admin'),
 (13, 'Admin', NULL, 'admin1@gmail.com', 'admin', NULL, NULL, 'admin'),
-(14, 'adminRoel', NULL, 'adminRoel@gmail.com', 'adminRoel', NULL, NULL, 'admin');
+(14, 'adminRoel', NULL, 'adminRoel@gmail.com', 'adminRoel', NULL, NULL, 'admin'),
+(15, 'akosiroel', NULL, 'fernandezroel58@gmail.com', '$2y$10$9UpFQ5TUEKX9Dfy8VMZqVOJNTiAjitJefy0pWupCsGyNQghdLg2LO', NULL, NULL, 'admin'),
+(16, 'Roel', NULL, 'admin11@gmail.com', '$2y$10$vY.8OjGT/sbvvTJlFCUfZuNUC5x9eE0TbPsQnh15La89EGzWaJAT6', NULL, NULL, 'admin'),
+(17, 'Lia', NULL, 'lia@gmail.com', '$2y$10$vY.8OjGT/sbvvTJlFCUfZuNUC5x9eE0TbPsQnh15La89EGzWaJAT6', NULL, NULL, 'admin'),
+(18, 'lia', NULL, 'adminLia@gmail.com', 'adminLia', NULL, NULL, 'admin');
 
 --
 -- Indexes for dumped tables
@@ -185,6 +238,12 @@ ALTER TABLE `designs`
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`order_id`),
   ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `orderx`
+--
+ALTER TABLE `orderx`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `order_items`
@@ -243,6 +302,12 @@ ALTER TABLE `orders`
   MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `orderx`
+--
+ALTER TABLE `orderx`
+  MODIFY `id` int(4) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
@@ -276,7 +341,7 @@ ALTER TABLE `t_shirt_designs`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Constraints for dumped tables

@@ -169,7 +169,7 @@ $confirmedOrdersResult = $conn->query($confirmedOrdersSql);
 .accept {
   background-color: #6DA067; 
   color: black;
-}
+} 
 
 .accept:hover {
   background-color: #4CAF50;
