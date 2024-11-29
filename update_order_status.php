@@ -1,26 +1,34 @@
 <?php
-// Connect to the database
-$conn = new mysqli("localhost", "root", "", "apparel");
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+$conn = mysqli_connect('localhost', 'root', '', 'apparel');
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
 
-// Get order ID and status from the AJAX request
-$order_id = $_GET['id'];
-$status = $_GET['status']; // 'Completed' or other statuses
+$orderId = $_GET['id'];
+$deliveryStatus = $_GET['delivery_status'];
 
-// Update the status of the order in the database
-$stmt = $conn->prepare("UPDATE orderx SET status = ? WHERE id = ?");
-$stmt->bind_param("si", $status, $order_id);
+// Update order status and delivery status
+$sql = "UPDATE orderx SET delivery_status = ?, status = 'Confirmed' WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('si', $deliveryStatus, $orderId);
 if ($stmt->execute()) {
-    echo json_encode(['success' => true, 'order' => ['id' => $order_id, 'status' => $status]]);
+    echo json_encode([
+        'success' => true,
+        'order' => [
+            'id' => $orderId,
+            'product' => $row['product'], // Fetch from DB if needed
+            'bust' => $row['bust'],       // Fetch from DB if needed
+            'waist' => $row['waist'],     // Fetch from DB if needed
+            'shoulder' => $row['shoulder'], // Fetch from DB if needed
+            'quantity' => $row['quantity'], // Fetch from DB if needed
+            'delivery_status' => $deliveryStatus
+        ]
+    ]);
 } else {
-    echo json_encode(['success' => false, 'error' => $stmt->error]);
+    echo json_encode(['success' => false, 'error' => 'Failed to update order']);
 }
-$stmt->close();
-
 ?>
+
 
 <script>
 function displayOrderDetails(orderId) {
@@ -43,6 +51,8 @@ function displayOrderDetails(orderId) {
             document.getElementById('orderWaist').textContent = order.waist;
             document.getElementById('orderShoulder').textContent = order.shoulder;
             document.getElementById('orderDate').textContent = order.order_date;
+            document.getElementById('orderStatus').textContent = order.status;
+
 
             // Set up the Accept button click handler
             var acceptButton = document.querySelector('.accept');
@@ -51,17 +61,22 @@ function displayOrderDetails(orderId) {
                 var xhrUpdate = new XMLHttpRequest();
                 xhrUpdate.open(
                     'GET',
-                    'update_order_status.php?id=' + orderId + '&status=Completed',
+                    'update_order_status.php?id=' + orderId + '&delivery_status=Completed',
                     true
                 );
-
+                xhrUpdate.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xhrUpdate.onload = function () {
                     if (xhrUpdate.status === 200) {
-                        alert('Order Completed successfully!');
-                        // Add the order to the confirmed orders table
-                        addToConfirmedOrders(order);
+                        var response = JSON.parse(xhrUpdate.responseText);
+                        if (response.success) {
+                            alert('Order Completed successfully!');
+                            // Add the order to the confirmed orders table
+                            addToConfirmedOrders(response.order);
+                        } else {
+                            alert('Failed to update the order status: ' + response.error);
+                        }
                     } else {
-                        alert('Failed to update the order status.');
+                        alert('Failed to update the order status. Invalid server response.');
                     }
                 };
 
@@ -100,7 +115,4 @@ function addToConfirmedOrders(order) {
         pendingRow.remove();
     }
 }
-</script>
-
-
 </script>

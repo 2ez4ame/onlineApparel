@@ -25,9 +25,9 @@
             <div class="form-group">
                 <label for="fabric">Fabric</label>
                 <select id="fabric" name="fabric">
-                    <option value="cotton">Cotton</option>
-                    <option value="polyester">Polyester</option>
-                    <option value="linen">Linen</option>
+                    <option value="Cotton">Cotton</option>
+                    <option value="Polyester">Polyester</option>
+                    <option value="Linen">Linen</option>
                 </select>
             </div>
             <div class="form-group">

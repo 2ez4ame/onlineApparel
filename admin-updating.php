@@ -1,15 +1,39 @@
+<?php
+$conn = mysqli_connect('localhost', 'root', '', 'apparel');
+if (!$conn) {
+  die("Connection failed: " . mysqli_connect_error());
+}
+
+// Fetch pending orders
+$sql = "SELECT id, product, quantity, bust, waist, shoulder, status, delivery_status FROM orderx WHERE status = 'Pending'"; 
+$result = $conn->query($sql);
+
+// Debugging: Check if any rows are fetched
+if ($result->num_rows > 0) {
+  echo "<script>console.log('Pending orders fetched successfully');</script>";
+} else {
+  echo "<script>console.log('No pending orders found');</script>";
+}
+
+// Fetch confirmed orders
+$confirmedOrdersSql = "SELECT id, product, bust, waist, shoulder, quantity, delivery_status FROM orderx WHERE status != 'Pending'";
+$confirmedOrdersResult = $conn->query($confirmedOrdersSql);
+
+// Debugging: Check if any rows are fetched
+if ($confirmedOrdersResult->num_rows > 0) {
+  echo "<script>console.log('Confirmed orders fetched successfully');</script>";
+} else {
+  echo "<script>console.log('No confirmed orders found');</script>";
+}
+?>
+
 <link rel="shortcut icon" href="icons/logo.png" type="image/x-icon">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 <style>
     * {
   box-sizing: border-box;
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
 }
 
 .dashboard {
@@ -20,14 +44,12 @@
   max-width: 1200px;
 }
 
-/* Left Section (New Orders) */
 .new-orders {
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 20px;
   margin-top: 200px;
-  
 }
 
 .order-list .order {
@@ -39,11 +61,14 @@
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
-  
   margin-top: 5px;
+  cursor: pointer; /* Add this line */
 }
 
-/* Right Section (Order Details & Confirmed Orders) */
+.order-item:hover {
+  background-color: #f0f0f0;
+}
+
 .order-details {
   display: grid;
   grid-template-columns: 1fr;
@@ -52,7 +77,7 @@
 
 .order-info-container {
   display: flex;
-  flex-direction: row; /* Change to row for side-by-side layout */
+  flex-direction: row;
   gap: 20px;
   background-color: #fff;
   border: 1px solid #ddd;
@@ -67,13 +92,12 @@
   flex: 1;
   border: 1px solid #ddd;
   border-radius: 8px;
-  width: 300px; /* Adjust width to fit content */
+  width: 300px;
   margin: 5px;
   display: flex;
   flex-direction: column;
-  gap: 10px; /* Space between each label and value */
+  gap: 10px;
   background-color: #eaeaea;
-
 }
 
 .order-info p {
@@ -81,13 +105,12 @@
   justify-content: space-between; 
   padding: -10px;
   margin: 5px 20px 5px 20px;
-  
 }
 
 .order-image {
   flex: 1;
   background-color: #eaeaea;
-  height: 300px; /* Adjust height as needed */
+  height: 300px;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -99,11 +122,7 @@
 
 .order-image p {
   margin: 0;
-  
 }
-
-/* Order actions buttons style */
-
 
 .order-actions button {
   padding: 10px;
@@ -111,10 +130,9 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  width: 300px;
+  width: 230px;
   margin-left: 25px;
   margin-bottom:20px;
-  
 }
 
 .accept {
@@ -147,7 +165,6 @@
   margin-left: 420px;
 }
 
-
 .confirmed-orders table {
   width: 100%;
   border-collapse: collapse;
@@ -162,6 +179,10 @@
 .confirmed-orders th {
   background-color: #f9f9f9;
 }
+
+.dropdown-menu{
+  width: 230px;
+}
 </style>
 
 <div class="container">
@@ -170,86 +191,246 @@
       <div class="order-list">
         <div class="order-item">
           <span class="order">Product</span>
+          <span class="order">ID</span>
           <span class="order">Quantity</span>
         </div>
-        <div class="order-item">
-          <span>T-Shirt</span>
-          <span>153</span>
-        </div>
-        <div class="order-item">
-          <span>Jersey</span>
-          <span>507</span>
-        </div>
-        <div class="order-item">
-          <span>Jacket</span>
-          <span>200</span>
-        </div>
+        <?php
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                echo "<div class='order-item' data-order-id='" . $row['id'] . "' data-product='" . htmlspecialchars($row['product']) . "' data-quantity='" . $row['quantity'] . "' data-bust='" . $row['bust'] . "' data-waist='" . $row['waist'] . "' data-shoulder='" . $row['shoulder'] . "' data-status='" . $row['status'] . "' data-delivery-status='" . $row['delivery_status'] . "' onclick='displayOrderDetails(this)'>";
+                echo "<span class='product'>" . htmlspecialchars($row['product']) . "</span>";
+                echo "<span class='order-id'>" . $row['id'] . "</span>";
+                echo "<span class='quantity'>" . $row['quantity'] . "</span>";
+                echo "</div>";
+            }
+        } else {
+            echo "<div class='order-item'><span>No products found</span></div>";
+        }
+        ?>
       </div>
     </div>
 
-    <!-- Order Details & Confirmed Orders Section -->
     <div class="order-details">
-      <!-- Combined Order Info & Image Container -->
       <div class="order-info-container">
-      
-        <!-- Order Info on the Left -->
         <div class="order-info">
-          <p><strong>Order ID:</strong><span>103546</span></p>
-          <p><strong>Product:</strong><span>T-Shirt</span></p>
-          <p><strong>Size:</strong><span>Small</span></p>
-          <p><strong>Fabric:</strong><span>Cotton</span></p>
-          <p><strong>Quantity:</strong><span>153</span></p>
-          <p><strong>Date:</strong><span>09/13/2024</span></p>
-          
-        <div class="order-actions">
-        <button class="accept">Ready for Pickup</button>
-        <br>
-        <button class="decline">Order Complete</button>
-      </div>
+          <p><strong>Order ID:</strong><span id="orderId"></span></p>
+          <p><strong>Product:</strong><span id="orderProduct"></span></p>
+          <p><strong>Quantity:</strong><span id="orderQuantity"></span></p>
+          <p><strong>Bust:</strong><span id="orderBust"></span></p>
+          <p><strong>Waist:</strong><span id="orderWaist"></span></p>
+          <p><strong>Shoulder:</strong><span id="orderShoulder"></span></p>
+          <p><strong>Delivery Status:</strong><span id="orderDeliveryStatus"></span></p>
+          <div class="order-actions dropdown">
+            <div class="d-flex justify-content-center my-3">
+              <button class="btn btn-success dropdown-toggle w-99" style="font-weight:bold" type="button" id="orderStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Update Delivery Status
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="orderStatusDropdown">
+                <li><a class="dropdown-item" href="#">Processing</a></li>
+                <li><a class="dropdown-item" href="#">Ready for Pickup</a></li>
+                <li><a class="dropdown-item" href="#">Shipped</a></li>
+                <li><a class="dropdown-item" href="#">Out for Delivery</a></li>
+                <li><a class="dropdown-item" href="#">Delivered</a></li>
+                <li><a class="dropdown-item" href="#">Cancelled</a></li>
+              </ul>
+              <button class="btn btn-success mr-4" style="font-weight:bold;" onclick="submitOrderStatus()">Submit</button>
+            </div>
+          </div>
         </div>
-       
-       
-        <!-- Order Image on the Right -->
         <div class="order-image">
           <p>Image Placeholder</p>
         </div>
-        
       </div>
-
-      <!-- Order Actions (Buttons) under Order Info -->
-     
     </div>
   </div>
 
-  <!-- Confirmed Orders Section -->
   <div class="confirmed-orders">
-    <h2>Order Complete </h2>
+    <h3>Completed Orders</h3>
     <table>
       <thead>
         <tr>
           <th>Order ID</th>
           <th>Product</th>
-          <th>Size</th>
+          <th>Bust</th>
+          <th>Waist</th>
+          <th>Shoulder</th>  
           <th>Quantity</th>
-          <th>Mode of Delivery</th>
+          <th>Delivery Status</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>103546</td>
-          <td>T-Shirt</td>
-          <td>Small</td>
-          <td>153</td>
-          <td>Ready for Pickup</td>
-        </tr>
-        <tr>
-          <td>203566</td>
-          <td>Jacket</td>
-          <td>Large</td>
-          <td>203</td>
-          <td>Delivered</td>
-        </tr>
+      <tbody id="confirmedOrdersTable">
+        <?php
+        if ($confirmedOrdersResult->num_rows > 0) {
+            while ($row = $confirmedOrdersResult->fetch_assoc()) {
+                echo "<tr class='confirmed-order-item' data-order-id='" . $row['id'] . "' data-product='" . htmlspecialchars($row['product']) . "' data-quantity='" . $row['quantity'] . "' data-bust='" . $row['bust'] . "' data-waist='" . $row['waist'] . "' data-shoulder='" . $row['shoulder'] . "' data-delivery-status='" . $row['delivery_status'] . "' onclick='displayOrderDetails(this)'>";
+                echo "<td>" . $row['id'] . "</td>";
+                echo "<td>" . htmlspecialchars($row['product']) . "</td>";
+                echo "<td>" . $row['bust'] . "</td>";
+                echo "<td>" . $row['waist'] . "</td>";
+                echo "<td>" . $row['shoulder'] . "</td>";
+                echo "<td>" . $row['quantity'] . "</td>";
+                echo "<td>" . $row['delivery_status'] . "</td>";
+                echo "</tr>";
+            }
+        } else {
+            echo "<tr><td colspan='7'>No confirmed orders found</td></tr>";
+        }
+        ?>
       </tbody>
     </table>
   </div>
 </div>
+
+<!-- Bootstrap Modal for Alert -->
+<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="alertModalLabel">Updated</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="alertModalBody">
+        <!-- Alert message will be inserted here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownItems = document.querySelectorAll('.dropdown-item');
+    const orderDeliveryStatusSpan = document.getElementById('orderDeliveryStatus');
+
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function(event) {
+            event.preventDefault();
+            const selectedStatus = this.textContent;
+            orderDeliveryStatusSpan.textContent = selectedStatus;
+        });
+    });
+});
+
+function displayOrderDetails(element) {
+    const orderId = element.getAttribute('data-order-id');
+    const orderProduct = element.getAttribute('data-product');
+    const orderQuantity = element.getAttribute('data-quantity');
+    const orderBust = element.getAttribute('data-bust');
+    const orderWaist = element.getAttribute('data-waist');
+    const orderShoulder = element.getAttribute('data-shoulder');
+    const orderDeliveryStatus = element.getAttribute('data-delivery-status');
+
+    // Debug values
+    console.log({ orderId, orderProduct, orderQuantity, orderBust, orderWaist, orderShoulder, orderDeliveryStatus });
+
+    // Update the order-info section
+    document.getElementById('orderId').innerText = orderId;
+    document.getElementById('orderProduct').innerText = orderProduct;
+    document.getElementById('orderQuantity').innerText = orderQuantity;
+    document.getElementById('orderBust').innerText = orderBust;
+    document.getElementById('orderWaist').innerText = orderWaist;
+    document.getElementById('orderShoulder').innerText = orderShoulder;
+    document.getElementById('orderDeliveryStatus').innerText = orderDeliveryStatus;
+}
+
+function submitOrderStatus() {
+    const orderId = document.getElementById('orderId').innerText;
+    const orderDeliveryStatus = document.getElementById('orderDeliveryStatus').innerText;
+
+    if (orderId && orderDeliveryStatus) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `update_order_status.php?id=${orderId}&delivery_status=${encodeURIComponent(orderDeliveryStatus)}`, true);
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                console.log(xhr.responseText); // Debug server response
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        showAlertModal('Order status updated successfully!');
+                        updateConfirmedOrdersTable(response.order);
+                        // Update the delivery status in the DOM
+                        document.querySelector(`.order-item[data-order-id='${orderId}']`).setAttribute('data-delivery-status', orderDeliveryStatus);
+                        document.querySelector(`.confirmed-order-item[data-order-id='${orderId}'] .delivery-status`).innerText = orderDeliveryStatus;
+                    } else {
+                        showAlertModal('Failed to update order status: ' + response.error);
+                    }
+                } catch (e) {
+                    console.error('Error parsing JSON response:', e);
+                    showAlertModal('Status Updated Successfully');
+                }
+            } else {
+                showAlertModal('Failed to update order status. Please try again.');
+            }
+        };
+
+        xhr.onerror = function() {
+            showAlertModal('Network error. Please check your connection.');
+        };
+
+        xhr.send();
+    } else {
+        showAlertModal('Order ID or delivery status is missing.');
+    }
+}
+
+function showAlertModal(message) {
+    document.getElementById('alertModalBody').innerText = message;
+    const alertModal = new bootstrap.Modal(document.getElementById('alertModal'));
+    alertModal.show();
+}
+
+function updateConfirmedOrdersTable(order) {
+    // Check if the order already exists in the confirmed orders table
+    let existingRow = document.querySelector(`.confirmed-order-item[data-order-id='${order.id}']`);
+    
+    if (existingRow) {
+        // Update the existing row
+        existingRow.querySelector('.delivery-status').innerText = order.delivery_status;
+    } else {
+        // Add a new row to the confirmed orders table
+        const table = document.querySelector('.confirmed-orders tbody');
+        const row = document.createElement('tr');
+        row.classList.add('confirmed-order-item');
+        row.setAttribute('data-order-id', order.id);
+        row.setAttribute('data-product', order.product);
+        row.setAttribute('data-quantity', order.quantity);
+        row.setAttribute('data-bust', order.bust);
+        row.setAttribute('data-waist', order.waist);
+        row.setAttribute('data-shoulder', order.shoulder);
+        row.setAttribute('data-delivery-status', order.delivery_status);
+        row.innerHTML = `
+            <td>${order.id}</td>
+            <td>${order.product}</td>
+            <td>${order.bust}</td>
+            <td>${order.waist}</td>
+            <td>${order.shoulder}</td>
+            <td>${order.quantity}</td>
+            <td class="delivery-status">${order.delivery_status}</td>
+        `;
+        table.appendChild(row);
+
+        // Add click event listener to the new row
+        row.addEventListener('click', function() {
+            displayOrderDetails(row);
+        });
+    }
+
+    // Remove the order from the pending list
+    const pendingRow = document.querySelector(`.order-item[data-order-id='${order.id}']`);
+    if (pendingRow) {
+        pendingRow.remove();
+    }
+}
+
+// Add click event listeners to existing confirmed order rows
+document.querySelectorAll('.confirmed-order-item').forEach(row => {
+    row.addEventListener('click', function() {
+        displayOrderDetails(row);
+    });
+});
+
+
+</script>

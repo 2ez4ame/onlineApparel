@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_URI'] == '/onlineapparel/thispagedoesnotexist') {
 
     <div class="images">
         <div>
-        <img onclick= "customizeTshirt()" src="icons/tshirt.png" alt="tshirt">
+        <img onclick= "customizePolo()" src="icons/image.png" alt="tshirt">
         </div>
         <div>
         <img onclick= "customizePolo()" src="icons/polo.png" alt="tshirt">
@@ -171,7 +171,7 @@ if ($_SERVER['REQUEST_URI'] == '/onlineapparel/thispagedoesnotexist') {
     // Prevent the event from bubbling up to document
     event.stopPropagation();
   });
-
+    
   // Close the dropdown if clicked outside of it
   document.addEventListener('click', function (event) {
     // Check if the click is outside of the dropdown
@@ -181,6 +181,40 @@ if ($_SERVER['REQUEST_URI'] == '/onlineapparel/thispagedoesnotexist') {
     }
   });
 });
+
+function loadOrderStatus(event, orderId) {
+  // If the click event was triggered by the checkbox, return early
+  if (event.target.type === 'checkbox') {
+    return;
+  }
+
+  // Show the modal
+  const modal = document.getElementById("order-status-modal");
+  modal.style.display = "block";
+
+  // Fetch and load order-status.php content
+  fetch('order-status.php?order_id=' + orderId)
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("order-status-content").innerHTML = data;
+    })
+    .catch(error => console.error('Error loading order-status.php:', error));
+}
+
+function closeOrderStatus() {
+  // Hide the modal
+  const modal = document.getElementById("order-status-modal");
+  modal.style.display = "none";
+}
+
+// Close the modal if the user clicks outside of it
+window.onclick = function(event) {
+  const modal = document.getElementById("order-status-modal");
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
 function loadSavedProjects() {
   const container2 = document.querySelector('.container2');
   
@@ -201,40 +235,60 @@ function loadSavedProjects() {
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
       document.getElementById("savedProjectsContainer").innerHTML = xhr.responseText;
+      // Ensure the saved projects content is displayed
+      document.getElementById("savedProjectsContainer").style.display = 'block';
     }
   };
   xhr.send();
 }
 
-
 function orderPlaced() {
+  const container2 = document.querySelector('.container2');
+  
+  if (container2) {
+    // Hide container2 using both display and visibility
+    container2.style.display = 'none';
+    container2.style.visibility = 'hidden';
 
-  document.querySelector('.container2').style.display = 'none'; //this is for the content will be hidden if another content is shown
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "order-customer.php", true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            // Insert the response content into the placeholder div
-            document.getElementById("savedProjectsContainer").innerHTML = xhr.responseText;
-        }
-    };
-    xhr.send();
+    // Apply a hidden CSS class as a fallback
+    container2.classList.add('hidden-container2');
+  }
+
+  console.log("Container2 visibility set to hidden in orderPlaced");
+
+  // Fetch and load order-customer.php content
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "order-customer.php", true);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      document.getElementById("savedProjectsContainer").innerHTML = xhr.responseText;
+      // Ensure the order-customer content is displayed
+      document.getElementById("savedProjectsContainer").style.display = 'block';
+    }
+  };
+  xhr.send();
 }
-function loadOrderStatus(event) {
+
+function loadOrderStatus(event, orderId) {
   // If the click event was triggered by the checkbox, return early
   if (event.target.type === 'checkbox') {
     return;
   }
 
   // Hide the order-customer table
-  document.getElementById("order-customer-table").classList.add("hidden");
+  const orderCustomerTable = document.getElementById("order-customer-table");
+  if (orderCustomerTable) {
+    orderCustomerTable.classList.add("hidden");
+  }
 
   // Show the order-status content area
   const orderStatusContent = document.getElementById("order-status-content");
-  orderStatusContent.classList.remove("hidden");
+  if (orderStatusContent) {
+    orderStatusContent.classList.remove("hidden");
+  }
 
   // Fetch and load order-status.php content
-  fetch('order-status.php')
+  fetch('order-status.php?order_id=' + orderId)
     .then(response => response.text())
     .then(data => {
       orderStatusContent.innerHTML = data;
@@ -242,20 +296,33 @@ function loadOrderStatus(event) {
     .catch(error => console.error('Error loading order-status.php:', error));
 }
 
-// Function to stop the click event from bubbling when the checkbox is clicked
+function closeOrderStatus() {
+  // Hide the modal
+  const modal = document.getElementById("order-status-modal");
+  modal.style.display = "none";
+}
+
+// Close the modal if the user clicks outside of it
+window.onclick = function(event) {
+  const modal = document.getElementById("order-status-modal");
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
 function checkboxClick(event) {
   event.stopPropagation(); // Prevent the click event on the checkbox from triggering row click
 }
 
 function customize(){
   window.location.href = "customize.php";
- 
 }
 
 function customizePolo(){
   window.location.href = "customize.php";
 }
-function Oversize(){
+
+function customizeOversize(){
   window.location.href = "customize.php";
 }
 
@@ -263,5 +330,15 @@ function backtoHome(){
   window.location.href = "userhome.php";
 }
 </script>
+
+<!-- Order Status Modal -->
+<div id="order-status-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-icon" onclick="closeOrderStatus()">&times;</span>
+    <div id="order-status-content">
+      <!-- order-status content will load here dynamically -->
+    </div>
+  </div>
+</div>
 
 <?php include('css/userhomestyle.php'); ?>

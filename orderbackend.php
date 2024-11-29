@@ -4,6 +4,7 @@ session_start();
 
 // Check if the order is placed
 if (isset($_POST['order'])) {
+    $product = isset($_POST['product']) ? $_POST['product'] : ''; // Product is now treated as a string
     $bust = isset($_POST['bust']) ? floatval($_POST['bust']) : 0;
     $waist = isset($_POST['waist']) ? floatval($_POST['waist']) : 0;
     $shoulder = isset($_POST['shoulder']) ? floatval($_POST['shoulder']) : 0;
@@ -20,16 +21,23 @@ if (isset($_POST['order'])) {
     }
 
     // Debugging statement
-    error_log("Received order request with amount: $amount, quantity: $quantity, bust: $bust, waist: $waist, shoulder: $shoulder, fabric: $fabric");
+    error_log("Received order request with product:$product, amount: $amount, quantity: $quantity, bust: $bust, waist: $waist, shoulder: $shoulder, fabric: $fabric");
 
     // Prepare the SQL statement to insert the order into the database
-    $stmt = $conn->prepare("INSERT INTO `orderx` (amount, quantity, bust, waist, shoulder, fabric, status) VALUES (?, ?, ?, ?, ?, ?, 'pending')");
+    $stmt = $conn->prepare("INSERT INTO `orderx` (product, amount, quantity, bust, waist, shoulder, fabric, total, status, delivery_status, order_date, delivery_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     if ($stmt === false) {
         die("Error in SQL preparation: " . $conn->error);
     }
 
     // Bind the parameters to prevent SQL injection
-    $stmt->bind_param("iidsss", $amount, $quantity, $bust, $waist, $shoulder, $fabric);
+    $total = $amount * $quantity; // Calculate the total amount
+    $product = 'T-Shirt'; // Hardcoded product name
+    $status = 'Pending';
+    $delivery_status = 'Processing';
+    $order_date = date('Y-m-d H:i:s'); // Current date and time
+    $delivery_date = date('Y-m-d H:i:s', strtotime('+3 days')); // Delivery date 3 days from now
+
+    $stmt->bind_param('sdiddssissss', $product, $amount, $quantity, $bust, $waist, $shoulder, $fabric, $total, $status, $delivery_status, $order_date, $delivery_date);
 
     if ($stmt->execute()) {
         // Generate the PayMongo payment link after the order is placed

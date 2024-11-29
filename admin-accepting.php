@@ -7,23 +7,13 @@ if ($conn->connect_error) {
 }
 
 // Query to get order details
-$sql = "SELECT id, product, quantity, bust, waist, shoulder, order_date FROM orderx"; 
+$sql = "SELECT id, product, quantity, bust, waist, shoulder, order_date FROM orderx WHERE status = 'Pending'"; 
 $result = $conn->query($sql);
 
 // Query to get confirmed orders
-$confirmedOrdersSql = "SELECT id, product, quantity, bust, waist, shoulder FROM orderx WHERE status = 'Completed'";
+$confirmedOrdersSql = "SELECT id, product, quantity, bust, waist, shoulder, order_date FROM orderx WHERE status = 'Confirmed'";
 $confirmedOrdersResult = $conn->query($confirmedOrdersSql);
-
-// Check for errors in the queries
-if ($result === false) {
-    die("Error fetching orders: " . $conn->error);
-}
-
-if ($confirmedOrdersResult === false) {
-    die("Error fetching confirmed orders: " . $conn->error);
-}
 ?>
-
 <style>
     * {
       font-family: "Poppins", sans-serif;
@@ -31,12 +21,7 @@ if ($confirmedOrdersResult === false) {
       font-style: normal;
     }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-}
+
 
 .dashboard {
   display: grid;
@@ -52,14 +37,15 @@ if ($confirmedOrdersResult === false) {
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 20px;
-  margin-top: 200px;
+  margin-right: 100%;
   cursor: pointer;
+  width: 297px;
   
 }
 /* General styles for the order item */
 .new-orders .order-list .order-item {
   display: flex;
-  justify-content: space-between;
+
   padding: 10px;
   transition: background-color 0.3s ease;
 }
@@ -98,7 +84,7 @@ if ($confirmedOrdersResult === false) {
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
-  
+  margin-right: 20px;
   margin-top: 5px;
 }
 
@@ -111,7 +97,7 @@ if ($confirmedOrdersResult === false) {
 
 .order-info-container {
   display: flex;
-  flex-direction: row; /* Change to row for side-by-side layout */
+  flex-direction: column; 
   gap: 20px;
   background-color: #fff;
   border: 1px solid #ddd;
@@ -119,6 +105,9 @@ if ($confirmedOrdersResult === false) {
   padding: 20px;
   align-items: flex-start;
   height:500px;
+  margin-top: -310px;
+  width: 1200px;
+  margin-left: 420px;
 }
 
 .order-info {
@@ -126,7 +115,7 @@ if ($confirmedOrdersResult === false) {
   flex: 1;
   border: 1px solid #ddd;
   border-radius: 8px;
-  width: 300px; /* Adjust width to fit content */
+  width: 450px; /* Adjust width to fit content */
   margin: 5px;
   display: flex;
   flex-direction: column;
@@ -273,12 +262,14 @@ $conn->close();
       <p><strong>Shoulder:</strong><span id="orderShoulder"></span></p>
       <p><strong>Date:</strong><span id="orderDate"></span></p>
       <div class="order-actions">
-        <button class="accept" onclick="updateOrderStatus('accept', order)">Accept Order</button>
+        <button class="accept" onclick="updateOrderStatus('accept')">Accept Order</button>
         <br>
-        <button class="decline" onclick="updateOrderStatus('decline', order.id)">Decline Order</button>
+        <button class="decline" onclick="updateOrderStatus('decline')">Decline Order</button>
       </div>
     </div>
+    
   </div>
+  
 </div>
 
 <!-- Confirmed Orders Section -->
@@ -294,6 +285,7 @@ $conn->close();
         <th>Bust</th>
         <th>Waist</th>
         <th>Shoulder</th>
+        <th>Date</th>
       </tr>
     </thead>
     <tbody>
@@ -306,11 +298,12 @@ $conn->close();
             <td><?php echo htmlspecialchars($row['bust']); ?></td>
             <td><?php echo htmlspecialchars($row['waist']); ?></td>
             <td><?php echo htmlspecialchars($row['shoulder']); ?></td>
+            <td><?php echo htmlspecialchars($row['order_date']); ?></td>
           </tr>
         <?php endwhile; ?>
       <?php else: ?>
         <tr>
-          <td colspan="6">No confirmed orders found.</td>
+          <td colspan="7">No confirmed orders found</td>
         </tr>
       <?php endif; ?>
     </tbody>
@@ -319,82 +312,101 @@ $conn->close();
 
 <script>
   function displayOrderDetails(orderId) {
-      // Create a new XMLHttpRequest object
-      var xhr = new XMLHttpRequest();
-      
-      // Set up the request
-      xhr.open('GET', 'fetch_order_details.php?id=' + orderId, true);
-      
-      // Define the callback function for when the request completes
-      xhr.onload = function() {
+    // Create a new XMLHttpRequest object
+    var xhr = new XMLHttpRequest();
+
+    // Set up the request to fetch the order details
+    xhr.open('GET', 'fetch_order_details.php?id=' + orderId, true);
+
+    // Define the callback function for when the request completes
+    xhr.onload = function () {
         if (xhr.status === 200) {
-          var order = JSON.parse(xhr.responseText);
-          
-          // Populate the order details section with the fetched data
-          document.getElementById('orderId').textContent = order.id;
-          document.getElementById('orderProduct').textContent = order.product;
-          document.getElementById('orderQuantity').textContent = order.quantity;
-          document.getElementById('orderBust').textContent = order.bust;
-          document.getElementById('orderWaist').textContent = order.waist;
-          document.getElementById('orderShoulder').textContent = order.shoulder;
-          document.getElementById('orderDate').textContent = order.order_date;
-          
-          // Set up the Accept button click handler
-          var acceptButton = document.querySelector('.accept');
-          acceptButton.onclick = function() {
-            updateOrderStatus('accept', order);
-          };
-          
-          // Set up the Decline button click handler
-          var declineButton = document.querySelector('.decline');
-          declineButton.onclick = function() {
-            updateOrderStatus('decline', order.id);
-          };
-        }
-      };
+            var order = JSON.parse(xhr.responseText);
 
-      // Send the request
-      xhr.send();
-    }
+            // Populate the order details section with the fetched data
+            document.getElementById('orderId').textContent = order.id;
+            document.getElementById('orderProduct').textContent = order.product;
+            document.getElementById('orderQuantity').textContent = order.quantity;
+            document.getElementById('orderBust').textContent = order.bust;
+            document.getElementById('orderWaist').textContent = order.waist;
+            document.getElementById('orderShoulder').textContent = order.shoulder;
+            document.getElementById('orderDate').textContent = order.order_date;
 
-    function updateOrderStatus(action, order) {
-      var xhrUpdate = new XMLHttpRequest();
-      var status = action === 'accept' ? 'Completed' : 'Declined'; // Set status based on action
+            // Set up the Accept button click handler
+            var acceptButton = document.querySelector('.accept');
+            acceptButton.onclick = function () {
+                updateOrderStatus('accept', order.id);
+            };
 
-      xhrUpdate.open('GET', 'update_order_status.php?id=' + order.id + '&status=' + status, true);
-
-      xhrUpdate.onload = function() {
-        if (xhrUpdate.status === 200) {
-          alert('Order ' + status + ' successfully!');
-          if (status === 'Completed') {
-            addToConfirmedOrders(order); // Ensure order data is passed correctly
-          }
+            // Set up the Decline button click handler
+            var declineButton = document.querySelector('.decline');
+            declineButton.onclick = function () {
+                updateOrderStatus('decline', order.id);
+            };
         } else {
-          alert('Error: ' + xhrUpdate.responseText);
+            alert('Failed to load order details.');
         }
-      };
+    };
 
-      xhrUpdate.send();
-    }
+    // Send the request to fetch order details
+    xhr.send();
+  }
 
-    function addToConfirmedOrders(order) {
-      // Get the confirmed orders table
-      var table = document.querySelector('.confirmed-orders tbody');
-      
-      // Create a new row with the confirmed order details
-      var row = document.createElement('tr');
-      row.innerHTML = `
+  function updateOrderStatus(action, orderId) {
+    var newStatus = action === 'accept' ? 'Confirmed' : 'Declined';
+
+    // Send AJAX request to update the order status
+    var xhrUpdate = new XMLHttpRequest();
+    xhrUpdate.open('POST', 'update_order_status.php', true);
+    xhrUpdate.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+    xhrUpdate.onload = function () {
+        if (xhrUpdate.status === 200) {
+            alert('Order status updated to ' + newStatus + '!');
+            // Optionally update UI, e.g., move to confirmed orders
+            if (newStatus === 'Confirmed') {
+                var order = {
+                    id: orderId,
+                    product: document.getElementById('orderProduct').textContent,
+                    quantity: document.getElementById('orderQuantity').textContent,
+                    bust: document.getElementById('orderBust').textContent,
+                    waist: document.getElementById('orderWaist').textContent,
+                    shoulder: document.getElementById('orderShoulder').textContent,
+                    order_date: document.getElementById('orderDate').textContent
+                };
+                addToConfirmedOrders(order);
+            }
+        } else {
+            alert('Failed to update the order status.');
+        }
+    };
+
+    xhrUpdate.send('id=' + orderId + '&status=' + newStatus);
+  }
+
+  function addToConfirmedOrders(order) {
+    // Get the confirmed orders table
+    var table = document.querySelector('.confirmed-orders tbody');
+
+    // Create a new row with the confirmed order details
+    var row = document.createElement('tr');
+    row.innerHTML = `
         <td>${order.id}</td>
         <td>${order.product}</td>
         <td>${order.quantity}</td>
         <td>${order.bust}</td>
         <td>${order.waist}</td>
         <td>${order.shoulder}</td>
-      `;
-      
-      // Append the new row to the table
-      table.appendChild(row);
+        <td>${order.order_date}</td>
+    `;
+
+    // Append the new row to the table
+    table.appendChild(row);
+
+    // Optionally, remove the order from the pending list if needed
+    var pendingRow = document.querySelector(`.order-item[data-order-id='${order.id}']`);
+    if (pendingRow) {
+        pendingRow.remove();
     }
-</script>
-
-
+  }
+</script> 
